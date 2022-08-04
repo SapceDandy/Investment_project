@@ -2,6 +2,7 @@ html,
 body {
   padding: 0;
   margin: 0;
+  background: grey;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
@@ -13,6 +14,7 @@ a {
 
 * {
   box-sizing: border-box;
+  cursor: none;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,3 +26,184 @@ a {
     background: black;
   }
 }
+
+/*NAVBAR*/
+.navbar {
+  display: relative;
+  height: 70px;
+  width: 100%;
+  background: white;
+  color: white;
+  top: 0;
+  font-weight: bold;
+  padding: 0 10vw;
+  z-index: 100;
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, .3);
+}
+
+.navbar ul {
+  /*column-gap: calc(100vw - 300px);*/
+  display: flex;
+  flex-direction: row;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.navbar ul div {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  column-gap: 1rem;
+}
+
+.navbar img {
+  margin-top: 5px;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.navbar li {
+  border-radius: 50%;
+}
+
+.navbar button {
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: max-content;
+  margin: 10px 0;
+  padding: .5rem 1rem;
+  color: white;
+  background-color: #1414ff;
+  border: none;
+  border-radius: 5px;
+  cursor: none;
+  transition: all .1s ease-in-out ;
+}
+
+.navbar button:hover {
+  background-color: #4f4ffb;
+  transition: all .2s ease-in-out ;
+}
+
+.navbar .btn-logo {
+  font-size: 1.4rem;
+  background-color: black;
+  transition: all .2s ease-in-out ;
+}
+
+.navbar .btn-logo:hover {
+  background-color: rgb(83, 83, 83);
+  transition: all .2s ease-in-out ;
+}
+/*END OF NAVBAR*/
+
+/*CHOOSE USERNAME START*/
+.chooseUserSection {
+  font-size: xx-large;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.chooseUserSection h3{
+  font-weight: bold;
+  color: white;
+}
+
+.chooseUserSection form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 60vw;
+}
+
+.chooseUserSection form div {
+  display: flex;
+  flex-direction: row;
+  column-gap: .25rem;
+}
+
+.chooseUserSection form input {
+  border-radius: 5px;
+  height: 3rem;
+  border-style: solid;
+  outline: none;
+  width: 43vw;
+}
+
+.chooseUserSection form button {
+  height: 3rem;
+  border-radius: 5px;
+  border: transparent;
+  font-weight: bold;
+}
+/*END OF CHOOSE USERNAME*/
+
+/*MIGHT CHANGE HOW THE LOADER LOOKS LATER... IF I HAVE TIME (First: 7/29/22 /Last: 7/29/22)*/
+/*Colors will need to be adjusted*/
+.loader {
+  border: 10px solid white;
+  border-top: 10px solid black;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/*PROFILE PAGE*/
+.userProfile {
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;;
+}
+
+.userProfile img {
+  border-radius: calc(20vw + 130px);
+  width: 30vw;
+}
+/*END OF PROFILE PAGE*/
+
+/*MAINLINKS START*/
+.mainLinks {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.5rem;
+  flex-direction: row;
+  column-gap: calc(10vw - 20px);
+}
+
+.mainLinks a {
+  cursor: none;
+  pointer-events: all;
+  font-weight: bold;
+}
+/*END OF MAINLINKS*/
+
+/*CURSOR*/
+.cursor {
+  position: absolute;
+  border: 2px solid orange;
+  background-color: orange;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+/*END CURSOR*/
