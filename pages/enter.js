@@ -4,16 +4,18 @@ import { signInWithPopup, signInAnonymously, signOut } from 'firebase/auth';
 import { UserContext } from "../library/context";
 import { useEffect, useState, useCallback, useContext } from 'react';
 import debounce from 'lodash.debounce';
+import Link from "next/link";
 
-export default function EnterPage({ }) {
+export default function EnterPage(props) {
     const { user, username } = useContext(UserContext);
 
     return(
         <main>
-            {(user) ? 
-                (!username) ? (<UsernameForm />) : (<SignOutButton />)
-                :
-                (<SignInButton />)
+            {(user && username) ? 
+              (<SignOutButton />) :
+              (user && !username) ? 
+              (<UsernameForm />) :
+              (<SignInButton />)
             }
         </main>
     )
@@ -37,7 +39,10 @@ function SignInButton() {
 }
 
 function SignOutButton() {
-    return addEventListener("click",() => signOut(auth))/*<button style = {{background: "red"}} onClick = {() => signOut(auth)}>Sign Out</button>*/
+    return (
+      <Link href = "/" onClick = {() => signOut(auth)}> {/*<button style = {{background: "red"}} onClick = {() => signOut(auth)}>Sign Out</button>*/}
+      </Link>
+    )
 }
 
 function UsernameForm() {

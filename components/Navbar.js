@@ -20,7 +20,7 @@ export default function Navbar({forwardedRef}) {
         <nav className = "navbar">
             <ul style = {{columnGap: !username ? "calc(100vw - 300px)" : "calc(100vw - 500px)"}}>
                 <li>
-                    <Link href = {!username ? "/" : "/enter"}>
+                    <Link href = "/">
                         <button className = "btn-logo" ref = {ref}>Devon Dudley</button>
                     </Link>
                 </li>

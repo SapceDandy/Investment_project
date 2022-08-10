@@ -1,9 +1,11 @@
 import Feed from "../components/Feed";
 import Loader from "../components/Loader"
+import UserContext from "../library/context"
 import { firestore, postToJSON } from '../library/firebase';
+import { useUserData } from "../library/hooks";
 import { Timestamp, query, where, orderBy, limit, collectionGroup, getDocs, startAfter, getFirestore } from 'firebase/firestore';
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 const numOfPosts = 5;
 
@@ -58,20 +60,20 @@ export default function Home(props) {
 
   return (
     <>
-      <div className = "mainLinks">
-          <button>
-            ALL
-          </button>
-          <button>
-            Investors
-          </button>
-          <button>
-            Seeking Investment
-          </button>
-          <button>
-            Mentors
-          </button>
-      </div>
+     <div className = "mainLinks">
+            <button>
+              ALL
+            </button>
+            <button>
+              Investors
+            </button>
+            <button>
+              Seeking Investment
+            </button>
+            <button>
+              Mentors
+            </button>
+          </div>
 
       <main>
         <Feed posts = {posts} />
