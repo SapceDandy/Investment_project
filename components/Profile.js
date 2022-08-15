@@ -1,4 +1,5 @@
 export default function Profile({ user }) {
+    console.log("Profile User: ", user)
     return(
         <div className = "userProfile">
             <img src={user.photoURL}/>

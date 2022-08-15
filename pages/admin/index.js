@@ -23,17 +23,18 @@ export default function AdminPostsPage(props) {
 }
 
 function PostList() {
-    const ref = collection(getFirestore(), 'users', auth.currentUser.uid, 'posts')
+    const ref = collection(firestore, 'users', auth.currentUser.uid, 'posts')
     const postQuery = query(ref, orderBy('createdAt'))
   
     const [querySnapshot] = useCollection(postQuery);
   
     const posts = querySnapshot?.docs.map((doc) => doc.data());
+    console.log("Admin: ", postQuery)
   
     return (
       <>
         <h1>Manage your Posts</h1>
-        <Feed posts={posts} admin />
+        <Feed posts = {posts} admin/>
       </>
     );
   }
@@ -62,7 +63,7 @@ function PostList() {
         uid,
         username,
         published: false,
-        content: '# hello world!',
+        content: 'Type here...',
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         heartCount: 0,

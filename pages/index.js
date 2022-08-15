@@ -1,8 +1,7 @@
 import Feed from "../components/Feed";
 import Loader from "../components/Loader"
-import UserContext from "../library/context"
 import { firestore, postToJSON } from '../library/firebase';
-import { useUserData } from "../library/hooks";
+import { UserContext } from "../library/context";
 import { Timestamp, query, where, orderBy, limit, collectionGroup, getDocs, startAfter, getFirestore } from 'firebase/firestore';
 import Link from "next/link";
 import { useState, useContext } from "react";
@@ -29,6 +28,8 @@ export async function getServerSideProp(context) {
 export default function Home(props) {
   const [posts, setPosts] = useState(props.uploadPosts);
   const [loading, setLoading] = useState(false);
+  const { user, username } = useContext(UserContext);
+
 
   const [feedBottom, setFeedBottom] = useState(false);
 
@@ -60,31 +61,36 @@ export default function Home(props) {
 
   return (
     <>
-     <div className = "mainLinks">
-            <button>
-              ALL
-            </button>
-            <button>
-              Investors
-            </button>
-            <button>
-              Seeking Investment
-            </button>
-            <button>
-              Mentors
-            </button>
-          </div>
+    {username &&
+     (
+      <>
+        <div className = "mainLinks">
+                <button>
+                  ALL
+                </button>
+                <button>
+                  Investors
+                </button>
+                <button>
+                  Seeking Investment
+                </button>
+                <button>
+                  Mentors
+                </button>
+              </div>
 
-      <main>
-        <Feed posts = {posts} />
+          <main>
+            <Feed posts = {posts} />
 
-        {!loading && !feedBottom && <button onClick = {getPosts}>Next</button>}
+            {!loading && !feedBottom && <button onClick = {getPosts}>Next</button>}
 
-        <Loader show = {loading} />
+            <Loader show = {loading} />
 
-        {feedBottom && "You have reached the end!"}
+            {feedBottom && "You have reached the end!"}
 
-      </main>
+          </main>
+      </>)
+    }
     </>
   )
 }

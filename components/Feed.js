@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-export default function Posts({ posts, admin}) {
+export default function Feed({ posts, admin}) {
+    console.log(posts)
     return posts ? posts.map((post) => <PostItem post = {post} key = {post.slug} admin = {admin} />) : null;
 }
 
@@ -16,10 +17,10 @@ function PostItem({ post, admin = false }) {
                 </a>
             </Link>
 
-            <Link href = {`/${post.username}`}>
-                <a>
-                    <strong>By @{post.username}</strong>
-                </a>
+            <Link href={`/${post.username}/${post.slug}`}>
+                <h2>
+                <a>{post.title}</a>
+                </h2>
             </Link>
 
             <footer>
@@ -28,6 +29,18 @@ function PostItem({ post, admin = false }) {
                 </span>
                 <span>💕 {post.heartCount} Likes</span>
             </footer>
+
+            {admin && (
+                <>
+                    <Link href={`/admin/${post.slug}`}>
+                        <h3>
+                        <button>Edit</button>
+                        </h3>
+                    </Link>
+
+                    {post.published ? <p >Live</p> : <p >Unpublished</p>}
+                </>
+            )}
         </div>
     )
 }

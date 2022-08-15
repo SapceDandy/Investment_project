@@ -4,21 +4,32 @@ import { signInWithPopup, signInAnonymously, signOut } from 'firebase/auth';
 import { UserContext } from "../library/context";
 import { useEffect, useState, useCallback, useContext } from 'react';
 import debounce from 'lodash.debounce';
+import { useRouter } from 'next/router';
+import Index from "../pages/index";
 import Link from "next/link";
+//import { delay } from "lodash";
 
 export default function EnterPage(props) {
     const { user, username } = useContext(UserContext);
 
     return(
-        <main>
-            {(user && username) ? 
-              (<SignOutButton />) :
-              (user && !username) ? 
-              (<UsernameForm />) :
-              (<SignInButton />)
-            }
-        </main>
+      <main>
+          {(!user) ? 
+          <SignInButton /> :
+          (!username) ?
+          < UsernameForm />: 
+          <Redirect to = "/" />
+          }
+      </main>
     )
+}
+
+function Redirect({ to }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push(to);
+  }, [to])
 }
 
 function SignInButton() {
@@ -28,22 +39,21 @@ function SignInButton() {
 
     return (
         <>
-        <button className = "btn-google" onClick = {signInWithGoogle}>
-            <img src = {'/google-png.png'} width="30px"/> Sign in with Google
-        </button>
-        <button onClick={() => signInAnonymously(auth)}>
-            Sign in Anonymously
-        </button>
+          <button  onClick = {signInWithGoogle}>
+              <img src = {'/google-png.png'} width="30px"/> Sign in with Google
+          </button>
+          <button onClick={() => signInAnonymously(auth)}>
+              Sign in Anonymously
+          </button>
         </>
     );
 }
 
-function SignOutButton() {
+/*function SignOutButton() {
     return (
-      <Link href = "/" onClick = {() => signOut(auth)}> {/*<button style = {{background: "red"}} onClick = {() => signOut(auth)}>Sign Out</button>*/}
-      </Link>
+      <button style = {{background: "transparent", borderColor: "transparent"}} onClick = {() => signOut(auth)}/>
     )
-}
+}*/
 
 function UsernameForm() {
   const [formValue, setFormValue] = useState('');
@@ -86,8 +96,6 @@ function UsernameForm() {
     }
   };
 
-  //
-
   useEffect(() => {
     checkUsername(formValue);
   }, [formValue]);
@@ -108,40 +116,21 @@ function UsernameForm() {
   );
 
   return (
-    !username && (
-      <section className = "chooseUserSection">
-        <h3>Choose Username</h3>
-        <form onSubmit={onSubmit}>
-          <div>
-            <input name="username" placeholder="myname" value={formValue} onChange={onChange} style = {{ border:  isValid ? "5px solid green" : "5px solid white"}}/>
-            {/*<UsernameMessage username={formValue} isValid={isValid} loading={loading} />*/}
-            <button type="submit" className="btn-green" disabled = {!isValid}>
-              Choose
-            </button>
-          </div>
-
-          {/*<h3>Debug State</h3>
-          <div>
-            Username: {formValue}
-            <br />
-            Loading: {loading.toString()}
-            <br />
-            Username Valid: {isValid.toString()}
-    </div>*/}
-        </form>
-      </section>
-    )
+    <>
+    {!username && (
+        <section className = "chooseUserSection">
+          <h3>Choose Username</h3>
+          <form onSubmit={onSubmit}>
+            <div>
+              <input name="username" placeholder="myname" value={formValue} onChange={onChange} style = {{ border:  isValid ? "5px solid green" : "5px solid white"}}/>
+              {/*<UsernameMessage username={formValue} isValid={isValid} loading={loading} />*/}
+              <button type="submit" className="btn-green" disabled = {!isValid}>
+                Choose
+              </button>
+            </div>
+          </form>
+        </section>
+    )}
+    </>
   );
 }
-
-/*function UsernameMessage({ username, isValid, loading }) {
-  if (loading) {
-    return <p>Checking...</p>;
-  } else if (isValid) {
-    return <p className="text-success">{username} is available!</p>;
-  } else if (username && !isValid) {
-    return <p className="text-danger">That username is taken!</p>;
-  } else {
-    return <p></p>;
-  }
-}*/

@@ -1,7 +1,11 @@
 import Profile from "../../components/Profile"
 import Feed from "../../components/Feed";
+import AuthCheck from "../../components/AuthCheck";
+import { useRouter } from 'next/router';
 import { getUser, postToJSON, firestore } from "../../library/firebase";
 import { query, collection, where, getDocs, limit, orderBy, getFirestore} from "firebase/firestore";
+
+import { useEffect } from "react";
 
 export async function getServerSideProps({ query: urlQuery }) {
     const { username } = urlQuery;
@@ -35,10 +39,21 @@ export async function getServerSideProps({ query: urlQuery }) {
 }
 
 export default function UserPage({user, posts}) {
+
     return (
         <main>
-            <Profile user = {user}/>
-            <Feed posts = {posts}/>
+            <AuthCheck fallback = {<Redirect to = "/enter" />} >
+                <Profile user = {user}/>
+                <Feed posts = {posts}/>
+            </AuthCheck>
         </main>
     )
+}
+
+function Redirect({ to }) {
+    const router = useRouter();
+  
+    useEffect(() => {
+        router.push(to);
+    }, [to])
 }

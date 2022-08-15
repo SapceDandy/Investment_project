@@ -1,6 +1,9 @@
-import { firestore, getUser, postToJSON } from '../../components/firebase';
+import { firestore, getUser, postToJSON } from '../../library/firebase';
+import AuthCheck from "../../components/AuthCheck";
+import HeartButton from "../../components/HeartButton";
 import { doc, getDocs, getDoc, collectionGroup, query, limit, getFirestore } from 'firebase/firestore';
-import Post from "../../components/Post";
+import PostContent from "../../components/PostContent";
+import { UserContext } from "../../library/context"
 
 import Link from 'next/link';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
@@ -14,7 +17,7 @@ export async function getStaticProps({ params }) {
     let path; 
 
     if (userDoc) {
-        const getPosts = doc(getFirestore(), userDoc.ref.path, 'posts', slug);
+        const getPosts = doc(firestore, userDoc, 'posts', slug);
         post = postToJSON(await getDoc(getPosts));
 
         path = getPosts.path;
@@ -22,22 +25,18 @@ export async function getStaticProps({ params }) {
 
     return {
         props: { post, path },
-        revalidate: 5000,
+        revalidate: 100,
     }
 }
 
 export async function getStaticPaths() {
     
-    const q = query(
-    collectionGroup(getFirestore(), 'posts'),
-    limit(20)
-    )
-
-    const snapshot = await getDocs(q);
-
-    const paths = snapshot.docs.map((doc) => {
-        const { slug, username } = doc.data();
-        
+    const q = query( collectionGroup(firestore, 'posts'), limit(10));
+    const snapshot = getDocs(q)
+    const paths = (await snapshot).docs.map((doc) => {
+        let { username, slug } = doc.data();
+        username = `${username}`;
+        slug = `${slug}`;
         return {
             params: { username, slug },
         };
@@ -50,24 +49,41 @@ export async function getStaticPaths() {
 }
 
 export default function Post(props) {
-    const getPosts = doc(getFirestore(), props.path);
+    const getPosts = doc(firestore, props.path);
     const [realtimePost] = useDocumentData(getPosts);
 
     const post = realtimePost || props.post;
 
-    {/* const { user: currentUser } = useContext(UserContext);*/}
+    const { user: currentUser } = useContext(UserContext);
 
     return (
         <main>
+            <div>Helleoeosojewifdisfnasoifnois</div>
             <section>
-                <Post post = {post} />
+                <PostContent post = {post} />
             </section>
 
-            {/*Need an Auth check*/}
+            <aside>
+                <p>
+                <strong>{post.heartCount || 0} 🤍</strong>
+                </p>
 
-        <aside>
-            <strong>{post.heartCount || 0} 💔</strong>
-        </aside>    
+                <AuthCheck
+                    fallback={
+                        <Link href="/enter">
+                        <button>💗 Sign Up</button>
+                        </Link>
+                    }
+                >
+                    <HeartButton postRef = {postRef} />
+                </AuthCheck>
+
+                    {currentUser?.uid === post.uid && (
+                    <Link href={`/admin/${post.slug}`}>
+                        <button style={{background: "red", height: "20px", width: "40px"}}>Edit Post</button>
+                    </Link>
+                    )}
+            </aside>   
 
         </main>
     )

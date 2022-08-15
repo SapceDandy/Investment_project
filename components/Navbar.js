@@ -29,11 +29,11 @@ export default function Navbar({forwardedRef}) {
                     <>
                         <div>
                             <li>
-                                <button onClick={signOutNow} ref = {ref2}>
-                                    <Link href = "/" >
-                                        Sign Out
-                                    </Link>
-                                </button>
+                                <Link href = "/enter">
+                                    <button onClick={signOutNow} ref = {ref2}> 
+                                            Sign Out 
+                                    </button>
+                                </Link>
                             </li>
                             <li>
                             <Link href = "/admin">
