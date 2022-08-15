@@ -2,31 +2,25 @@ import Feed from "../components/Feed";
 import Loader from "../components/Loader"
 import { firestore, postToJSON } from '../library/firebase';
 import { UserContext } from "../library/context";
-import { Timestamp, query, where, orderBy, limit, collectionGroup, getDocs, startAfter, getFirestore } from 'firebase/firestore';
-import Link from "next/link";
+import { Timestamp, query, where, orderBy, limit, collection, getDocs, startAfter, getFirestore } from 'firebase/firestore';
 import { useState, useContext } from "react";
 
 const numOfPosts = 5;
 
-export async function getServerSideProp(context) {
-  const ref = collectionGroup(getFirestore(), "posts");
+export async function getServerSideProps(context) {
+  const ref = collection(firestore, "posts");
 
-  const posts = query(
-    ref,
-    where("published", "==", true),
-    orderBy("createdAt", "desc"),
-    limit(numOfPosts)
-  )
+  const postsQuery = query(ref, where("published", "==", true), orderBy("createdAt", "desc"), limit(numOfPosts))
 
-  const uploadPosts = (await getDocs(posts)).docs.map(postToJSON);
-  
+  const uploadPosts = (await getDocs(postsQuery)).docs.map(postToJSON);
+
   return {
     props: { uploadPosts },
   }
 }
 
-export default function Home(props) {
-  const [posts, setPosts] = useState(props.uploadPosts);
+export default function Home({uploadPosts}) {
+  const [posts, setPosts] = useState(uploadPosts);
   const [loading, setLoading] = useState(false);
   const { user, username } = useContext(UserContext);
 
@@ -35,11 +29,11 @@ export default function Home(props) {
 
   const getPosts = async () => {
     setLoading(true);
-    const last = posts[postToJSON.length - 1];
+    const last = posts[posts.length - 1];
 
     const lastInCurrentList = typeof last.createdAt === "number" ? Timestamp.fromMillis(last.createdAt) : last.createdArt;
 
-    const ref = collectionGroup(getFirestore(), "posts");
+    const ref = collectionGroup(firestore, "posts");
 
     const posts = query(
       ref,
@@ -80,6 +74,7 @@ export default function Home(props) {
               </div>
 
           <main>
+            {console.log("Home page: ", posts)}
             <Feed posts = {posts} />
 
             {!loading && !feedBottom && <button onClick = {getPosts}>Next</button>}
