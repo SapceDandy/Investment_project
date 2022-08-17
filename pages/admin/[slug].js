@@ -1,6 +1,6 @@
 import AuthCheck from '../../components/AuthCheck';
 import { firestore, auth } from '../../library/firebase';
-import { serverTimestamp, doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { serverTimestamp, doc, setDoc, deleteDoc, updateDoc } from 'firebase/firestore';
 
 import { useState } from 'react';
 import { useRouter } from 'next/router';
@@ -63,10 +63,10 @@ function PostForm({ defaultValues, postRef, preview }) {
     const payLoad = {
       content,
       published,
-      updatedAt: serverTimestamp()
+      updatedAt: serverTimestamp(),
     }
 
-    await setDoc(postRef, payLoad);
+    await updateDoc(postRef, payLoad);
     /*postRef.update({
       content,
       published,
@@ -104,7 +104,7 @@ function PostForm({ defaultValues, postRef, preview }) {
         {errors.content && <p>{errors.content.message}</p>}
 
         <fieldset>
-          <input name="published" type="checkbox" {...register} />
+          <input name="published" type="checkbox" {...register("published")} />
           <label>Published</label>
         </fieldset>
 

@@ -2,17 +2,38 @@ import Feed from "../components/Feed";
 import Loader from "../components/Loader"
 import { firestore, postToJSON } from '../library/firebase';
 import { UserContext } from "../library/context";
-import { Timestamp, query, where, orderBy, limit, collection, getDocs, startAfter, getFirestore } from 'firebase/firestore';
+import { Timestamp, query, where, orderBy, limit, collectionGroup, collection, getDocs, startAfter, getFirestore, doc } from 'firebase/firestore';
 import { useState, useContext } from "react";
 
 const numOfPosts = 5;
 
 export async function getServerSideProps(context) {
-  const ref = collection(firestore, "posts");
+  /*const ref = collectionGroup(firestore, "posts");
 
   const postsQuery = query(ref, where("published", "==", true), orderBy("createdAt", "desc"), limit(numOfPosts))
 
-  const uploadPosts = (await getDocs(postsQuery)).docs.map(postToJSON);
+  const uploadPosts = (await getDocs(postsQuery)).docs.map((doc) => {postToJSON(doc)});*/
+  const q = query(collection(firestore, "users"));
+  const snapshot = await getDocs(q);
+  const data = snapshot.docs.map((doc) => ({
+    ...doc.data(), id: doc.id
+  }));
+  data.map((elem, index) => {
+    data[index] = query(collection(firestore, "users", elem.id, "posts"));
+  }).map( async (elem, index) => {
+    data[index] = await getDocs(elem);
+   
+  }).map((elem, index) => {
+    data[index] = elem.docs?.map((doc) => ({
+      ...doc.data(),
+    }));
+  })
+
+  const tes = snapshot.docs.map((doc) => ({
+    ...doc.data(), id: doc.id
+  }));
+
+  const uploadPosts = JSON.stringify(data)
 
   return {
     props: { uploadPosts },
@@ -20,10 +41,10 @@ export async function getServerSideProps(context) {
 }
 
 export default function Home({uploadPosts}) {
+  console.log("At the top: ", uploadPosts)
+  const { user, username } = useContext(UserContext);
   const [posts, setPosts] = useState(uploadPosts);
   const [loading, setLoading] = useState(false);
-  const { user, username } = useContext(UserContext);
-
 
   const [feedBottom, setFeedBottom] = useState(false);
 
@@ -75,7 +96,7 @@ export default function Home({uploadPosts}) {
 
           <main>
             {console.log("Home page: ", posts)}
-            <Feed posts = {posts} />
+            {/*<Feed posts = {posts} />*/}
 
             {!loading && !feedBottom && <button onClick = {getPosts}>Next</button>}
 

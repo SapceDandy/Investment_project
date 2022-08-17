@@ -29,7 +29,7 @@ function PostList() {
     const [querySnapshot] = useCollection(postQuery);
   
     const posts = querySnapshot?.docs.map((doc) => doc.data());
-    console.log("Admin: ", postQuery)
+    console.log("Admin: ", postQuery) 
   
     return (
       <>
@@ -54,7 +54,7 @@ function PostList() {
     const createPost = async (e) => {
       e.preventDefault();
       const uid = auth.currentUser.uid;
-      const ref = doc(getFirestore(), 'users', uid, 'posts', slug);
+      const ref = doc(firestore, 'users', uid, 'posts', slug);
   
       // Tip: give all fields a default value here
       const data = {

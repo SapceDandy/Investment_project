@@ -35,7 +35,7 @@ export async function getUser(username) {
 
   const q = query(
     collection(firestore, 'users'), 
-    where('usernam', '==', username),
+    where('username', '==', username),
     limit(1)
   )
 
