@@ -1,8 +1,6 @@
 import Link from "next/link";
 
 export default function Feed({ posts, admin }) {
-    console.log("Post Feed: ", posts)
-    console.log("Feed Admin: ", admin)
     return posts ? posts.map((post) => <PostItem post = {post} key = {post.slug} admin = {admin} />) : null;
 }
 

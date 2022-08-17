@@ -86,11 +86,11 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <>
-    <motion.div
+    {/*<motion.div
         variants = {variants}
         animate = {cursorVariant}
         className = "cursor"
-      />
+      />*/}
       <UserContext.Provider value = { userData }>
         <Navbar forwardedRef = { [ref, ref2, ref3, ref4 ] } />
         <Component {...pageProps}/>

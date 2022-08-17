@@ -1,9 +1,12 @@
 import { firestore, auth, increment } from "../library/firebase";
 import { useDocument } from "react-firebase-hooks/firestore";
+import { doc } from 'firebase/firestore';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
 
 export default function Heart({ postRef }) {
-    const heartRef = postRef.collection("hearts").doc(auth.currentUser.uid);
+    const heartRef = doc(postRef, "hearts", auth.currentUser.uid);
     const [heartDoc] = useDocument(heartRef);
+    //console.log(heartDoc.exists())
 
     const addHeart = async () => {
         const uid = auth.currentUser.uid;
@@ -14,7 +17,7 @@ export default function Heart({ postRef }) {
     };
 
     const removeHeart = async () => {
-        let batch = firestore.batch();
+        const batch = firestore.batch();
 
         batch.update(postRef, { heartCount: increment(-1)});
         batch.set(heartRef)
@@ -22,7 +25,7 @@ export default function Heart({ postRef }) {
         await batch.commit();
     };
 
-    return heartDoc?.exists ? (
+    return (!heartDoc?.exists) ? (
         <button onClick = {removeHeart}>💔 Unheart</button>
     ) : (
         <button onClick = {addHeart}>💓 Heart</button>

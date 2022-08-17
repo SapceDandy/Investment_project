@@ -65,7 +65,7 @@ function PostForm({ defaultValues, postRef, preview }) {
       published,
       updatedAt: serverTimestamp(),
     }
-
+    //await setDoc(postRef, payLoad, {merge: true});
     await updateDoc(postRef, payLoad);
     /*postRef.update({
       content,

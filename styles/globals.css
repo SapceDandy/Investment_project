@@ -14,7 +14,7 @@ a {
 
 * {
   box-sizing: border-box;
-  cursor: none;
+  /*cursor: none;*/
 }
 
 @media (prefers-color-scheme: dark) {
@@ -175,7 +175,7 @@ a {
 
 .userProfile img {
   border-radius: calc(20vw + 130px);
-  width: 30vw;
+  width: 10vw;
 }
 /*END OF PROFILE PAGE*/
 

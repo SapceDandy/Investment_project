@@ -8,12 +8,12 @@ import { useState, useContext } from "react";
 const numOfPosts = 5;
 
 export async function getServerSideProps(context) {
-  /*const ref = collectionGroup(firestore, "posts");
+  const ref = collectionGroup(firestore, "posts");
 
   const postsQuery = query(ref, where("published", "==", true), orderBy("createdAt", "desc"), limit(numOfPosts))
 
-  const uploadPosts = (await getDocs(postsQuery)).docs.map((doc) => {postToJSON(doc)});*/
-  const q = query(collection(firestore, "users"));
+  const uploadPosts = (await getDocs(postsQuery)).docs.map(postToJSON);
+  /*const q = query(collection(firestore, "users"));
   const snapshot = await getDocs(q);
   const data = snapshot.docs.map((doc) => ({
     ...doc.data(), id: doc.id
@@ -33,7 +33,7 @@ export async function getServerSideProps(context) {
     ...doc.data(), id: doc.id
   }));
 
-  const uploadPosts = JSON.stringify(data)
+  const uploadPosts = JSON.stringify(data)*/
 
   return {
     props: { uploadPosts },
@@ -41,7 +41,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function Home({uploadPosts}) {
-  console.log("At the top: ", uploadPosts)
   const { user, username } = useContext(UserContext);
   const [posts, setPosts] = useState(uploadPosts);
   const [loading, setLoading] = useState(false);
@@ -56,13 +55,7 @@ export default function Home({uploadPosts}) {
 
     const ref = collectionGroup(firestore, "posts");
 
-    const posts = query(
-      ref,
-      where("published", "==", true),
-      orderBy("createdAt", "desc"),
-      startAfter(lastInCurrentList),
-      limit(numOfPosts)
-    )
+    const posts = query(ref, where("published", "==", true), orderBy("createdAt", "desc"), startAfter(lastInCurrentList), limit(numOfPosts));
 
     const loadedPosts = (await getDocs(posts)).docs.map((doc) => doc.data());
 
@@ -95,8 +88,7 @@ export default function Home({uploadPosts}) {
               </div>
 
           <main>
-            {console.log("Home page: ", posts)}
-            {/*<Feed posts = {posts} />*/}
+            <Feed posts = {posts} />
 
             {!loading && !feedBottom && <button onClick = {getPosts}>Next</button>}
 
