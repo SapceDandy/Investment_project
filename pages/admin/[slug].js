@@ -59,10 +59,14 @@ function PostForm({ defaultValues, postRef, preview }) {
 
   //const { isValid, isDirty } = formState;
 
-  const updatePost = async ({ content, published }) => {
+  const updatePost = async ({ content, published, header, investor, seeking, mentor}) => {
     const payLoad = {
       content,
+      header,
       published,
+      investor,
+      seeking,
+      mentor,
       updatedAt: serverTimestamp(),
     }
     //await setDoc(postRef, payLoad, {merge: true});
@@ -83,25 +87,52 @@ function PostForm({ defaultValues, postRef, preview }) {
     <form onSubmit={handleSubmit(updatePost)}>
       {preview && (
         <div>
-          <ReactMarkdown>{watch('content')}</ReactMarkdown>
+          <ReactMarkdown>{watch('header')}</ReactMarkdown>
         </div>
       )}
 
       <div>
         {/*<ImageUploader />*/}
+        <textarea
+          {...register("header", {
+            maxLength: { 
+              value: 150, 
+              message: 'Header is too long' 
+            },
+            minLength: { value: 10, message: 'Header is too short' },
+            required: { value: true, message: 'Header is required' },
+          })}
+        ></textarea>
 
         <textarea
           {...register("content", {
             maxLength: { 
               value: 20000, 
-              message: 'content is too long' 
+              message: 'Content is too long' 
             },
-            minLength: { value: 10, message: 'content is too short' },
-            required: { value: true, message: 'content is required' },
+            minLength: { value: 10, message: 'Content is too short' },
+            required: { value: true, message: 'Content is required' },
           })}
         ></textarea>
 
         {errors.content && <p>{errors.content.message}</p>}
+        
+        <fieldset>
+          <ul>
+            <li>
+              <input name="status" type="checkbox" {...register("investor")} />
+              <label>Investor</label>
+            </li>
+            <li>
+              <input name="status" type="checkbox" {...register("seeking")} />
+              <label>Seeking Investment</label>
+            </li>
+            <li>
+              <input name="status" type="checkbox" {...register("mentor")} />
+              <label>Mentor</label>
+            </li>
+          </ul>
+        </fieldset>
 
         <fieldset>
           <input name="published" type="checkbox" {...register("published")} />

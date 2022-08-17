@@ -63,6 +63,11 @@ function PostList() {
         uid,
         username,
         published: false,
+        All: true,
+        investor: false,
+        seeking: false,
+        mentor: false,
+        header: 'Header here...',
         content: 'Type here...',
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -82,11 +87,11 @@ function PostList() {
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="My Awesome Article!"
+          placeholder="Article Goes Here"
         />
-        <p>
+        {/*<p>
           <strong>Slug:</strong> {slug}
-        </p>
+        </p>*/}
         <button type="submit" disabled={!isValid}>
           Create New Post
         </button>

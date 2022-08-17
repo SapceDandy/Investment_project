@@ -58,7 +58,6 @@ export default function Post(props) {
 
     return (
         <main>
-            <div>Helleoeosojewifdisfnasoifnois</div>
             <section>
                 <PostContent post = {post} />
             </section>
