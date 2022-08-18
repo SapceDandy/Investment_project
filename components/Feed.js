@@ -5,29 +5,38 @@ export default function Feed({ posts, admin }) {
 }
 
 function PostItem({ post, admin = false }) {
-    const words = post?.content.trim().split(/\s+/g).length;
-    const read = (words/ 100 + 1).toFixed(0);
+    {/*const words = post?.content.trim().split(/\s+/g).length;
+    const read = (words/ 100 + 1).toFixed(0);*/}
 
     return (
         <div>
-            <Link href = {`/${post.username}`}>
-                <a>
-                    <strong>By @{post.username}</strong>
-                </a>
-            </Link>
+            <div>
+                <Link href={`/${post.username}/${post.slug}`}>  
+                        <a>
+                            <h2>{post.title}</h2>
+                        </a>
+                </Link>
 
-            <Link href={`/${post.username}/${post.slug}`}>
-                <h2>
-                <a>{post.title}</a>
-                </h2>
-            </Link>
+                <Link href = {`/${post.username}`}>
+                    <a>
+                        <strong>By @{post.username}</strong>
+                    </a>
+                </Link>
+            </div>
 
-            <footer>
+            <div>
+                {post.header}
+            </div>
+            <div>
+                #{post.status}
+            </div>
+
+            {/*<footer>
                 <span>
                     {words} words. {read} min read
                 </span>
                 <span>💕 {post.heartCount} Likes</span>
-            </footer>
+            </footer>*/}
 
             {admin && (
                 <>
