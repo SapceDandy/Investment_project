@@ -201,7 +201,7 @@ export default function Home({uploadPosts}) {
       <>
         <div className = "mainLinks">
                 <button onClick = {() => all() && setCurrentBtn("all")}>
-                  ALL
+                  All
                 </button>
                 <button onClick = {() => investor() && setCurrentBtn("investor")}>
                   Investors
@@ -212,15 +212,17 @@ export default function Home({uploadPosts}) {
                 <button onClick = {() => mentor() && setCurrentBtn("mentor")}>
                   Mentors
                 </button>
-              </div>
+        </div>
 
-          <main>
+          <main className = "pageIndexAlign">
             <Feed posts = {posts} />
 
-            {!loading && !feedBottom && (posts.length === numOfPosts) && <button onClick = {(currentBtn === "all") ? getPosts : getOtherTypes}>Next</button>}
+            <div>
+              {!loading && !feedBottom && (posts.length === numOfPosts) && <button className = "nextButton" onClick = {(currentBtn === "all") ? getPosts : getOtherTypes}>Next</button>}
+            </div>
 
             <Loader show = {loading} />
-
+            
             {feedBottom && "You have reached the end!"}
 
           </main>

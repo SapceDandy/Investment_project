@@ -35,7 +35,6 @@ function PostManager() {
         <>
           <section>
             <h1>{post.title}</h1>
-
             <PostForm postRef = {postRef} defaultValues = {post} preview = {preview} />
           </section>
 
@@ -68,8 +67,8 @@ const [state3, setState3] = useState(false);*/}
       status,
       updatedAt: serverTimestamp(),
     }
-    //await setDoc(postRef, payLoad, {merge: true});
-    await updateDoc(postRef, payLoad);
+    await setDoc(postRef, payLoad, {merge: true});
+    //await updateDoc(postRef, payLoad);
 
     reset({ content, published, header, status});
 
@@ -100,6 +99,7 @@ const [state3, setState3] = useState(false);*/}
       {preview && (
         <div>
           <ReactMarkdown>{watch('header')}</ReactMarkdown>
+          <ReactMarkdown>{watch('content')}</ReactMarkdown>
         </div>
       )}
 
@@ -114,6 +114,7 @@ const [state3, setState3] = useState(false);*/}
             minLength: { value: 10, message: 'Header is too short' },
             required: { value: true, message: 'Header is required' },
           })}
+          placeholder = "Rough explanation..."
         ></textarea>
 
         <textarea
@@ -125,25 +126,13 @@ const [state3, setState3] = useState(false);*/}
             minLength: { value: 10, message: 'Content is too short' },
             required: { value: true, message: 'Content is required' },
           })}
+          placeholder = "Main content..."
         ></textarea>
 
         {errors.content && <p>{errors.content.message}</p>}
-        
-        {/*<fieldset>
-
-          <input type="checkbox" checked = {state} id = "investor" onClick = {() => S1()} {...register("investor")} />
-          <label for = "investor">Investor</label>
-        
-          <input type="checkbox" checked = {state2} id = "seeking" onClick = {() => S2()} {...register("seeking")} />
-          <label for = "seeking">Seeking Investment</label>
-
-          <input type="checkbox" checked = {state3} id = "mentor" onClick = {() => S3()} {...register("mentor")} />
-          <label for = "mentor">Mentor</label>
-
-        </fieldset>*/}
 
         <fieldset>
-          <h2>Type</h2>
+          <span>Catagory: </span>
           <input {...register("status", {
             required: { value: true, message: 'Type is required' },
           })}  type="radio" id = "investor" value = "investor" />

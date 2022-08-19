@@ -5,10 +5,8 @@ import { UserContext } from "../library/context";
 import { useState, useEffect, useRef } from "react";
 import { useUserData } from "../library/hooks";
 import { motion } from "framer-motion";
-import { Domain } from 'domain';
 
 function MyApp({ Component, pageProps }) {
-
   const ref = useRef(null)
   const ref2 = useRef(null)
   const ref3 = useRef(null)
@@ -92,8 +90,10 @@ function MyApp({ Component, pageProps }) {
         className = "cursor"
       />*/}
       <UserContext.Provider value = { userData }>
-        <Navbar forwardedRef = { [ref, ref2, ref3, ref4 ] } />
-        <Component {...pageProps}/>
+        <Navbar forwardedRef = { [ref, ref2, ref3, ref4 ] } className = "navSpacing"/>
+        <div className = "notNav">
+          <Component {...pageProps} />
+        </div>
         <Toaster />
       </UserContext.Provider>
     </>

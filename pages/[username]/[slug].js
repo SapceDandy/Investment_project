@@ -60,7 +60,7 @@ export default function Post(props) {
         <AuthCheck
             fallback={
                 <Link href="/enter">
-                <button>💗 Sign Up</button>
+                You must sign-in to access this page
                 </Link>
             }
         >
@@ -70,16 +70,13 @@ export default function Post(props) {
                 </section>
 
                 <aside>
-                    <p>
+                    {/*<p>
                     <strong>{post.heartCount || 0} 🤍</strong>
-                    </p>
-
-                    <HeartButton postRef = {getPosts} />
-            
-
+                    </p>   
+                    <HeartButton postRef = {getPosts} />*/}
                     {currentUser?.uid === post.uid && (
                     <Link href={`/admin/${post.slug}`}>
-                        <button style={{background: "red", height: "20px", width: "40px"}}>Edit Post</button>
+                        <button>Edit Post</button>
                     </Link>
                     )}
                 </aside> 

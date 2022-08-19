@@ -2,7 +2,7 @@ import AuthCheck from "../../components/AuthCheck";
 import Feed from '../../components/Feed';
 import { UserContext } from '../../library/context';
 import { firestore, auth } from '../../library/firebase';
-import { serverTimestamp, query, collection, orderBy, getFirestore, setDoc, doc } from 'firebase/firestore';
+import { serverTimestamp, query, collection, orderBy, setDoc, doc } from 'firebase/firestore';
 
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -64,8 +64,8 @@ function PostList() {
         username,
         published: false,
         status: "none",
-        header: 'Header here...',
-        content: 'Type here...',
+        header: null,
+        content: null,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         heartCount: 0,
