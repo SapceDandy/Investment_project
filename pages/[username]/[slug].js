@@ -58,29 +58,31 @@ export default function Post(props) {
 
     return (
         <AuthCheck
-            fallback={
+            fallback = {
                 <Link href="/enter">
-                You must sign-in to access this page
+                    You must sign-in to access this page
                 </Link>
             }
         >
-            <main>
-                <section>
-                    <PostContent post = {post} />
-                </section>
+            <div className = "wrapper">
+                <main className = "singlePost">
+                    <section>
+                        <PostContent post = {post} />
+                    </section>
 
-                <aside>
-                    {/*<p>
-                    <strong>{post.heartCount || 0} 🤍</strong>
-                    </p>   
-                    <HeartButton postRef = {getPosts} />*/}
-                    {currentUser?.uid === post.uid && (
-                    <Link href={`/admin/${post.slug}`}>
-                        <button>Edit Post</button>
-                    </Link>
-                    )}
-                </aside> 
-            </main>
+                    <aside>
+                        {/*<p>
+                        <strong>{post.heartCount || 0} 🤍</strong>
+                        </p>   
+                        <HeartButton postRef = {getPosts} />*/}
+                        {currentUser?.uid === post.uid && (
+                        <Link href={`/admin/${post.slug}`}>
+                            <button className = "generalButton">Edit Post</button>
+                        </Link>
+                        )}
+                    </aside> 
+                </main>
+            </div>
         </AuthCheck>
     )
 }

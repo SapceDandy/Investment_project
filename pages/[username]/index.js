@@ -41,7 +41,7 @@ export async function getServerSideProps({ query: urlQuery }) {
 export default function UserPage({user, posts}) {
 
     return (
-        <main>
+        <main className = "wrapper">
             <AuthCheck fallback = {<Redirect to = "/enter" />} >
                 <Profile user = {user}/>
                 <Feed posts = {posts}/>

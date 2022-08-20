@@ -61,10 +61,10 @@ export default function Home({uploadPosts}) {
     setPosts(invest);
   }
 
-  async function seeking() {
+  async function investment() {
     const ref = collectionGroup(firestore, "posts");
   
-    const postsQuery = query(ref, where("published", "==", true), where("status", "==", "seeking"), orderBy("createdAt", "desc"), limit(numOfPosts))
+    const postsQuery = query(ref, where("published", "==", true), where("status", "==", "investment"), orderBy("createdAt", "desc"), limit(numOfPosts))
   
     const seek = (await getDocs(postsQuery)).docs.map(postToJSON);
 
@@ -199,31 +199,33 @@ export default function Home({uploadPosts}) {
     {username &&
      (
       <>
-        <div className = "mainLinks">
-                <button onClick = {() => all() && setCurrentBtn("all")}>
-                  All
-                </button>
-                <button onClick = {() => investor() && setCurrentBtn("investor")}>
-                  Investors
-                </button>
-                <button onClick = {() => seeking() && setCurrentBtn("seeking")}>
-                  Seeking Investment
-                </button>
-                <button onClick = {() => mentor() && setCurrentBtn("mentor")}>
-                  Mentors
-                </button>
-        </div>
+        <div className = "mainLinkWrapper">
+          <div className = "mainLinks">
+                  <button style={{background: (currentBtn === "all") ? "gray" : null}} onClick = {() => all() && setCurrentBtn("all")}>
+                    All
+                  </button>
+                  <button style={{background: (currentBtn === "investor") ? "red" : null}} onClick = {() => investor() && setCurrentBtn("investor")}>
+                    Investors
+                  </button>
+                  <button style={{background: (currentBtn === "investment") ? "blue" : null}} onClick = {() => investment() && setCurrentBtn("investment")}>
+                    Investment
+                  </button>
+                  <button style={{background: (currentBtn === "mentor") ? "orange" : null}} onClick = {() => mentor() && setCurrentBtn("mentor")}>
+                    Mentors
+                  </button>
+          </div>
+          </div>
 
           <main className = "pageIndexAlign">
             <Feed posts = {posts} />
 
             <div>
-              {!loading && !feedBottom && (posts.length === numOfPosts) && <button className = "nextButton" onClick = {(currentBtn === "all") ? getPosts : getOtherTypes}>Next</button>}
+              {!loading && !feedBottom && (posts.length === numOfPosts) && <button className = "generalButton" onClick = {(currentBtn === "all") ? getPosts : getOtherTypes}>Next</button>}
             </div>
 
             <Loader show = {loading} />
             
-            {feedBottom && "You have reached the end!"}
+            {feedBottom && <span>You have reached the end!</span>}
 
           </main>
       </>)

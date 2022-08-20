@@ -37,7 +37,7 @@ export default function Navbar({forwardedRef}) {
                             </li>
                             <li>
                             <Link href = "/admin">
-                                <button ref = {ref3}>Write Posts</button>
+                                <button ref = {ref3}>Create Post</button>
                             </Link>
                             </li>
                             <li>

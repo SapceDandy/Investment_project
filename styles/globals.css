@@ -48,7 +48,6 @@ a {
 }
 
 .navbar ul {
-  /*column-gap: calc(100vw - 300px);*/
   display: flex;
   flex-direction: row;
   list-style-type: none;
@@ -186,12 +185,18 @@ a {
 /*END OF PROFILE PAGE*/
 
 /*MAINLINKS START*/
-.mainLinks {
-  display: flex;
+.mainLinkWrapper {
+  display:flex;
   justify-content: center;
+}
+
+.mainLinks {
+  width: 60%;
+  display: flex;
   align-items: center;
-  margin-top: 1.5rem;
+  justify-content: center;
   flex-direction: row;
+  padding: 0rem 2rem;
   column-gap: calc(10vw - 20px);
 }
 
@@ -202,6 +207,7 @@ a {
   border: transparent;
   background-color: black;
   color: white;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, .3);
   transition: all .2s ease-in-out ;
 }
 
@@ -226,7 +232,7 @@ a {
 /*PAGE INDEX*/
 .pageIndexAlign {
   margin-top: 1rem;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -268,7 +274,7 @@ a {
   justify-content: space-evenly;
   flex-direction: row;
   padding: 0 2rem;
-  /*grid-template-columns: repeat(2, 1fr);*/
+  column-gap: 2rem;
   transform: translateY(-2rem);
   z-index: 2;
 }
@@ -289,11 +295,13 @@ a {
 }
 
 .feedHeader {
-  width: 100%;
+  background: #f1f1f1;
+  width: 93%;
   display: flex;
   justify-content: left;
-  padding: 0 2rem;
+  padding: 1rem 2rem;
   transform: translateY(-1rem);
+  border-radius: 20px;
 }
 
 .postStatusWrap {
@@ -304,6 +312,7 @@ a {
   padding: 0 2rem;
   z-index: 2;
   transform: translateY(1rem);
+  margin-bottom: .5rem;
   pointer-events: none;
 }
 
@@ -343,7 +352,7 @@ a {
   transition: all .2s ease-in-out;
 }
 
-.nextButton {
+.generalButton {
   display: flex;
   position: relative;
   justify-content: left;
@@ -355,8 +364,57 @@ a {
   transition: all .2s ease-in-out;
 }
 
-.nextButton:hover {
-  background-color: dimgray;
+.generalButton:hover {
+  color: black;
+  background-color: white;
   transition: all .2s ease-in-out;
 }
 /*END FEED*/
+
+/*SINGLE POST*/
+.wrapper {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.singlePost {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, .3);
+  width: 80%;
+}
+
+.createNewPostWrapper {
+  display: flex;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  top: 9rem;
+  z-Index: 4; 
+  background: lightgrey;
+  width: 100%;
+  padding-bottom: 1rem;
+}
+
+.createNewPostWrapper input {
+  padding: .5rem;
+  width: 30vw;
+  border-radius: 20px 0px 0px 20px;
+  outline: none;
+  border-style: none;
+}
+
+.createNewPostWrapper button {
+  padding: .5rem;
+  width: 5vw;
+  border-radius: 0px 20px 20px 0px;
+  border-style: none;
+}
+/*END SSINGLE POST*/

@@ -53,11 +53,6 @@ function PostManager() {
 
 function PostForm({ defaultValues, postRef, preview }) {
   const { register, handleSubmit, formState: {errors, isDirty, isValid}, reset, watch } = useForm({ defaultValues, mode: 'onChange' });
-  {/*const [state, setState] = useState(false);
-  const [state2, setState2] = useState(false);
-const [state3, setState3] = useState(false);*/}
-
-  //console.log("S1: ", state, ",S2: ", state2, ",S3: ", state3);
 
   const updatePost = async ({ content, published, header, status}) => {
     const payLoad = {
@@ -74,24 +69,6 @@ const [state3, setState3] = useState(false);*/}
 
     toast.success('Post updated successfully!');
   };
-
-  {/*function S1() {
-    setState(true);
-    setState2(false);
-    setState3(false);
-  }
-
-  function S2() {
-    setState2(true);
-    setState(false);
-    setState3(false);
-  } 
-
-  function S3() {
-    setState3(true);
-    setState(false);
-    setState2(false);
-  }*/}
 
   return (
     <>
@@ -140,8 +117,8 @@ const [state3, setState3] = useState(false);*/}
 
           <input {...register("status", {
             required: { value: true, message: 'Type is required' },
-          })} type="radio" id = "seeking" value = "seeking" />
-          <label for = "seeking">Seeking Investment</label>
+          })} type="radio" id = "investment" value = "investment" />
+          <label for = "investment">Investment</label>
 
           <input {...register("status", {
             required: { value: true, message: 'Type is required' },
