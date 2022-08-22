@@ -87,7 +87,7 @@ a {
   margin: 10px 0;
   padding: .5rem 1rem;
   color: white;
-  background-color: #1414ff;
+  background-color: black;
   border: none;
   border-radius: 5px;
   cursor: none;
@@ -95,7 +95,7 @@ a {
 }
 
 .navbar button:hover {
-  background-color: #4f4ffb;
+  background-color: dimgray;
   transition: all .2s ease-in-out ;
 }
 
@@ -253,6 +253,34 @@ a {
   justify-content: center;
 }
 
+.instantSearchWrapper input{
+  padding-left: .5rem;
+  width: 20vw;
+  height: 3.5vh;
+  border-radius: 10px 0px 0px 10px;
+  appearance: none;
+  outline: none;
+  border: none;
+}
+
+/* clears the ‘X’ from Internet Explorer */
+input[type=search]::-ms-clear { display: none; width : 0; height: 0; }
+input[type=search]::-ms-reveal { display: none; width : 0; height: 0; }
+/* clears the ‘X’ from Chrome */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration { display: none; }
+
+.instantSearchWrapper button {
+  width: 4vw;
+  height: 3.5vh;
+  outline: none;
+  border: none;
+  pointer-events: all;
+  cursor: pointer;
+}
+
 .exitSearch {
   display: flex;
   right: 0;
@@ -390,6 +418,31 @@ a {
   transition: all .2s ease-in-out;
 }
 
+.adminFeedHit {
+  width: 100%;
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: right;
+  column-gap: 1rem;
+}
+
+.adminFeedHit button { 
+  background-color: black;
+  color: white;
+  border-radius: 10px;
+  border-style: none;
+  pointer-events: all;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+}
+
+.adminFeedHit button:hover { 
+  background-color: dimgray;
+  transition: all .2s ease-in-out;
+}
+
 .generalButton {
   display: flex;
   position: relative;
@@ -399,6 +452,7 @@ a {
   border-radius: 10px;
   border-style: none;
   padding: .5rem 1.5rem;
+  cursor: pointer;
   transition: all .2s ease-in-out;
 }
 
@@ -420,6 +474,7 @@ a {
 
 .singlePost {
   display: flex;
+  flex-direction: column;
   position: relative;
   align-items: center;
   justify-content: center;
@@ -427,6 +482,25 @@ a {
   border-radius: 20px;
   box-shadow: 0px 5px 5px rgba(0, 0, 0, .3);
   width: 80%;
+}
+
+.singlePost section {
+  width: 100%;
+  padding: 1rem 3rem;
+}
+
+.singlePost aside {
+  width: 100%;
+  display: flex;
+  justify-content: right;
+  padding-right: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.singlePost aside .generalButton:hover {
+  background-color: dimgrey;
+  color: white;
+  transition: all .2s ease-in-out;
 }
 
 .createNewPostWrapper {
@@ -455,4 +529,173 @@ a {
   border-radius: 0px 20px 20px 0px;
   border-style: none;
 }
-/*END SSINGLE POST*/
+/*END SINGLE POST*/
+
+/*POST EDIT*/
+.postManagerWrapper {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.wrapperWrapper {
+  display: flex;
+  flex-direction: row;
+  margin-top: 4rem;
+}
+
+.formWrapper {
+  width: 60vw;
+  display: flex;
+  border-radius: 20px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+
+.wrapperWrapper aside{
+  width: max-content;
+  padding: 1rem;
+  margin-left: 4rem;
+  border-radius: 20px;
+  height: max-content;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  align-items: center;
+  row-gap: 1rem;
+}
+
+.wrapperWrapper button{
+  display: flex;
+  width: auto;
+  height: min-content;
+  position: relative;
+  justify-content: left;
+  background-color: black;
+  color: white;
+  border-radius: 10px;
+  border-style: none;
+  padding: .5rem 1.5rem;
+  transition: all .2s ease-in-out;
+}
+
+.wrapperWrapper button:hover {
+  background-color: dimgray;
+  transition: all .2s ease-in-out ;
+}
+
+.formTitle {
+  text-align: center;
+}
+
+.formBody {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+  padding: 1rem;
+}
+
+.formBody textarea{
+  width: 50vw;
+  height: max-content;
+  background: #f1f1f1;
+  outline: none;
+  border: none;
+  padding: .5rem;
+  border-radius: 10px;
+  overflow: auto;
+  outline: none;
+  resize: none;
+}
+
+.formBody fieldset {
+  border: none;
+} 
+
+.centerButton {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.formBody button {
+  width: min-content;
+  display: flex;
+  position: relative;
+  justify-content: left;
+  background-color: black;
+  color: white;
+  border-radius: 10px;
+  border-style: none;
+  padding: .5rem 1.5rem;
+  transition: all .2s ease-in-out;
+}
+
+.formBody button:hover {
+  background-color: dimgray;
+  transition: all .2s ease-in-out ;
+}
+
+.formBody button:disabled {
+  background: lightgrey;
+}
+/*END POST EDIT*/
+
+/*POST CONTENT*/
+.postContentTop {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+}
+
+.postContentTitleWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: left;
+}
+
+.postContentUserWrapper{
+  width: 100%;
+  display: flex;
+  justify-content: right;
+}
+
+.postContentUserWrapper span {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  justify-content: right;
+}
+
+.postStatusSpan {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-weight: bold;
+}
+
+.postContentSpan {
+  height: max-content;
+  background: #f1f1f1;
+  outline: none;
+  border: none;
+  padding-top: .1rem;
+  padding-bottom: .1rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  border-radius: 10px;
+}
+/*END POST CONTENT*/

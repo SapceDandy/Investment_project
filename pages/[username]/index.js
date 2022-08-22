@@ -27,8 +27,7 @@ export async function getServerSideProps({ query: urlQuery }) {
         const postsQuery = query(
             collection(firestore, userDoc.ref.path, 'posts'),
             where('published', '==', true),
-            orderBy('createdAt', 'desc'),
-            limit(5)
+            orderBy('createdAt', 'desc')
           );
         posts = (await getDocs(postsQuery)).docs.map(postToJSON);
     }

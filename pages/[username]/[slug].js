@@ -77,8 +77,10 @@ export default function Post(props) {
                         <HeartButton postRef = {getPosts} />*/}
                         {currentUser?.uid === post.uid && (
                         <Link href={`/admin/${post.slug}`}>
-                            <button className = "generalButton">Edit Post</button>
-                        </Link>
+                            <button className = "generalButton">Edit</button>
+                        </Link>)}
+                        {currentUser?.uid !== post.uid && (
+                            <button className = "generalButton">Follow</button>
                         )}
                     </aside> 
                 </main>

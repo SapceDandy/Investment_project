@@ -39,7 +39,7 @@ export function Hit({ hit }) {
                     </div>
 
                     {user && (
-                        <div className = "adminFeed">
+                        <div className = "adminFeedHit">
                             {/*admin && ((hit.published) ? <p style = {{color: "green"}}>Live</p> : <p style = {{color: "red"}}>Unpublished</p>)*/}
                             <Link href={`/admin/${hit.slug}`}>
                                 <h3>

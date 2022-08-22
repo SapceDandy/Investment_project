@@ -14,25 +14,39 @@ export default function PostContent({ post }) {
     const postHours = timeString.substr(12, 1);
     const utcHours = new Date().getUTCHours();
     const timeZoneHours = new Date().getHours();
-    console.log("UTC: ", )
     const timeZoneDifference = parseInt(utcHours) - parseInt(timeZoneHours);
-    const actualHour = Math.abs(parseInt(postHours) - timeZoneDifference);
+    const amOrPm = ((parseInt(postHours) - timeZoneDifference) >= 0) ? "PM" : "AM";
+    let actualHour = Math.abs(parseInt(postHours) + timeZoneDifference);
+    actualHour = (actualHour === 0) ? 12 : actualHour;
 
     return (
-        <div>
-          <h1>{post?.title}</h1>
-          <span>
-            Written by{' '}
-            <Link href={`/${post.username}/`}>
-              <a style = {{fontWeight: "bold"}}>@{post.username}</a>
-            </Link>{' '}
-            <div>
-              {`${monthString} ${day}, ${year} at ${actualHour}${time}`}
-            </div>
-          </span>
-          <ReactMarkdown>{post?.header}</ReactMarkdown>
-          <ReactMarkdown>{post?.content}</ReactMarkdown>
-          <ReactMarkdown>{post?.status}</ReactMarkdown>
+      <>
+        <div className = "postContentTop">
+          <div className = "postContentTitleWrapper">
+            <h1>{post?.title}</h1>
+          </div>
+          <div className = "postContentUserWrapper">
+            <span>
+              <div>
+                Written by {' '}
+                <Link href={`/${post.username}/`}>
+                  <a style = {{fontWeight: "bold"}}> @{post.username}</a>
+                </Link>{' '}
+              </div>
+              <div>
+                {`${monthString} ${day}, ${year} at ${actualHour}${time} ${amOrPm}`}
+              </div>
+            </span>
+          </div>
         </div>
+        <div className = "postContentSpan"><ReactMarkdown>{post?.header}</ReactMarkdown></div>
+        <div className = "postContentSpan"><ReactMarkdown>{post?.content}</ReactMarkdown></div>
+        <form>
+          <label for = "response">If you are interested send a response</label><br />
+          <input placeholder="Enter response here..." type = "text" id = "response" name = "response"></input>
+          <input type = "submit" value = "Send" />
+        </form>
+        <span className = "postStatusSpan" style = {{color: (post?.status === "investor") ? "red" : (post?.status === "investment") ? "blue" : (post?.status === "mentor") ? "orange" : "lightgrey"}}>#<ReactMarkdown>{post?.status}</ReactMarkdown></span>
+      </> 
     );
 }

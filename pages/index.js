@@ -160,7 +160,7 @@ export default function Home({uploadPosts}) {
               <Feed posts = {posts} />
 
               <div>
-                {!loading && !feedBottom && (posts.length === numOfPosts) && <button className = "generalButton" onClick = {(currentBtn === "all") ? getPosts : getOtherTypes}>Next</button>}
+                {!loading && !feedBottom && (posts.length % numOfPosts === 0) && <button className = "generalButton" onClick = {(currentBtn === "all") ? getPosts : getOtherTypes}>Next</button>}
               </div>
 
               <Loader show = {loading} />
