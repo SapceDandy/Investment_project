@@ -1,9 +1,14 @@
 import Link from "next/link";
+import { firestore } from "../library/firebase";
+import { doc, deleteDoc} from "firebase/firestore";
 import { UserContext } from "../library/context";
 import { useContext } from "react";
+import { useRouter } from 'next/router';
+import toast from 'react-hot-toast';
 
 export function Hit({ hit }) {
     const { user } = useContext(UserContext);
+    const postRef = doc(firestore, "users", hit.uid, "posts", hit.slug)
 
     return (
         <>
@@ -40,17 +45,35 @@ export function Hit({ hit }) {
 
                     {user && (
                         <div className = "adminFeedHit">
-                            {/*admin && ((hit.published) ? <p style = {{color: "green"}}>Live</p> : <p style = {{color: "red"}}>Unpublished</p>)*/}
                             <Link href={`/admin/${hit.slug}`}>
                                 <h3>
                                     <button>Edit</button>
                                 </h3>
                             </Link>
-                            {/*<DeletePostButton postRef={postRef} />*/}
+                            <DeletePostButton postRef={postRef}  onClick = {() => router.reload()}/>
                         </div>
                     )}
                 </div>
             </div>)}
         </>
     )
+}
+
+function DeletePostButton({ postRef }) {
+    const router = useRouter();
+
+    const deletePost = async () => {
+        const doIt = confirm('are you sure!');
+        if (doIt) {
+        await deleteDoc(postRef);
+        toast('post annihilated ', { icon: '🗑️' });
+        }
+        router.reload()
+    };
+
+    return (
+        <button onClick={deletePost}>
+        Delete
+        </button>
+    );
 }

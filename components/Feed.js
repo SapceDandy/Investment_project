@@ -3,6 +3,7 @@ import { firestore } from "../library/firebase"
 import { UserContext } from "../library/context";
 import { useContext } from "react";
 import { deleteDoc, doc } from "firebase/firestore";
+import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 
 export default function Feed({ posts, admin }) {
@@ -10,6 +11,7 @@ export default function Feed({ posts, admin }) {
 }
 
 function DeletePostButton({ postRef }) {
+    const router = useRouter();
 
     const deletePost = async () => {
         const doIt = confirm('are you sure!');
@@ -17,6 +19,7 @@ function DeletePostButton({ postRef }) {
         await deleteDoc(postRef);
         toast('post annihilated ', { icon: '🗑️' });
         }
+        router.reload()
     };
 
     return (
@@ -27,8 +30,6 @@ function DeletePostButton({ postRef }) {
 }
 
 function PostItem({ post, admin = false }) {
-    {/*const words = post?.content.trim().split(/\s+/g).length;
-    const read = (words/ 100 + 1).toFixed(0);*/}
     const postRef = doc(firestore, "users", post.uid, "posts", post.slug)
 
     const { user, username } = useContext(UserContext);
