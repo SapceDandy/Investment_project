@@ -1,11 +1,16 @@
 import Feed from "../components/Feed";
-import Loader from "../components/Loader"
+import Loader from "../components/Loader";
+import algoliasearch from 'algoliasearch/lite';
+import { Hit } from "../components/HitFeed"
+import { InstantSearch, SearchBox, Hits } from 'react-instantsearch-hooks-web';
 import { firestore, postToJSON } from '../library/firebase';
 import { UserContext } from "../library/context";
 import { Timestamp, query, where, orderBy, limit, collectionGroup, getDocs, startAfter} from 'firebase/firestore';
 import { useState, useContext } from "react";
 
 const numOfPosts = 5;
+const searchClient = algoliasearch('R4M0BO8C58', 'd998a625ec15d24aedf09a67607c1281');
+
 
 export async function getServerSideProps(context) {
   const ref = collectionGroup(firestore, "posts");
@@ -13,27 +18,6 @@ export async function getServerSideProps(context) {
   const postsQuery = query(ref, where("published", "==", true), orderBy("createdAt", "desc"), limit(numOfPosts))
 
   const uploadPosts = (await getDocs(postsQuery)).docs.map(postToJSON);
-  /*const q = query(collection(firestore, "users"));
-  const snapshot = await getDocs(q);
-  const data = snapshot.docs.map((doc) => ({
-    ...doc.data(), id: doc.id
-  }));
-  data.map((elem, index) => {
-    data[index] = query(collection(firestore, "users", elem.id, "posts"));
-  }).map( async (elem, index) => {
-    data[index] = await getDocs(elem);
-   
-  }).map((elem, index) => {
-    data[index] = elem.docs?.map((doc) => ({
-      ...doc.data(),
-    }));
-  })
-
-  const tes = snapshot.docs.map((doc) => ({
-    ...doc.data(), id: doc.id
-  }));
-
-  const uploadPosts = JSON.stringify(data)*/
 
   return {
     props: { uploadPosts },
@@ -46,9 +30,9 @@ export default function Home({uploadPosts}) {
   const [loading, setLoading] = useState(false);
 
   const [feedBottom, setFeedBottom] = useState(false);
-  let [currentBtn, setCurrentBtn] = useState("all");
+  const [currentBtn, setCurrentBtn] = useState("all");
 
-  //console.log(posts[posts.length - 1])
+  const [searching, setSearching] = useState(false)
 
   async function investor() {
     const ref = collectionGroup(firestore, "posts");
@@ -134,100 +118,58 @@ export default function Home({uploadPosts}) {
     }
   }
 
-  /*const getInvestors = async () => {
-    setLoading(true);
-    const last = posts[posts.length - 1];
-
-    const lastInCurrentList = typeof last.createdAt === "number" ? Timestamp.fromMillis(last.createdAt) : last.createdArt;
-
-    const ref = collectionGroup(firestore, "posts");
-
-    const posts = query(ref, where("published", "==", true), where("status", "==", "investor"), orderBy("createdAt", "desc"), startAfter(lastInCurrentList), limit(numOfPosts));
-
-    const loadedPosts = (await getDocs(posts)).docs.map((doc) => doc.data());
-
-    setPosts(posts.concat(loadedPosts))
-    setLoading(false);
-
-    if (loadedPosts.length < numOfPosts) {
-      setFeedBottom(true)
-    }
-  }
-
-  const getSeeking = async () => {
-    setLoading(true);
-    const last = posts[posts.length - 1];
-
-    const lastInCurrentList = typeof last.createdAt === "number" ? Timestamp.fromMillis(last.createdAt) : last.createdArt;
-
-    const ref = collectionGroup(firestore, "posts");
-
-    const posts = query(ref, where("published", "==", true), where("status", "==", "seeking"), orderBy("createdAt", "desc"), startAfter(lastInCurrentList), limit(numOfPosts));
-
-    const loadedPosts = (await getDocs(posts)).docs.map((doc) => doc.data());
-
-    setPosts(posts.concat(loadedPosts))
-    setLoading(false);
-
-    if (loadedPosts.length < numOfPosts) {
-      setFeedBottom(true)
-    }
-  }
-
-  const getMentors = async () => {
-    setLoading(true);
-    const last = posts[posts.length - 1];
-
-    const lastInCurrentList = typeof last.createdAt === "number" ? Timestamp.fromMillis(last.createdAt) : last.createdArt;
-
-    const ref = collectionGroup(firestore, "posts");
-
-    const posts = query(ref, where("published", "==", true), where("status", "==", "mentor"), orderBy("createdAt", "desc"), startAfter(lastInCurrentList), limit(numOfPosts));
-
-    const loadedPosts = (await getDocs(posts)).docs.map((doc) => doc.data());
-
-    setPosts(posts.concat(loadedPosts))
-    setLoading(false);
-
-    if (loadedPosts.length < numOfPosts) {
-      setFeedBottom(true)
-    }
-  }*/
-
   return (
     <>
     {username &&
      (
       <>
-        <div className = "mainLinkWrapper">
-          <div className = "mainLinks">
-                  <button style={{background: (currentBtn === "all") ? "gray" : null}} onClick = {() => all() && setCurrentBtn("all")}>
-                    All
-                  </button>
-                  <button style={{background: (currentBtn === "investor") ? "red" : null}} onClick = {() => investor() && setCurrentBtn("investor")}>
-                    Investors
-                  </button>
-                  <button style={{background: (currentBtn === "investment") ? "blue" : null}} onClick = {() => investment() && setCurrentBtn("investment")}>
-                    Investment
-                  </button>
-                  <button style={{background: (currentBtn === "mentor") ? "orange" : null}} onClick = {() => mentor() && setCurrentBtn("mentor")}>
-                    Mentors
-                  </button>
-          </div>
-          </div>
-
-          <main className = "pageIndexAlign">
-            <Feed posts = {posts} />
-
-            <div>
-              {!loading && !feedBottom && (posts.length === numOfPosts) && <button className = "generalButton" onClick = {(currentBtn === "all") ? getPosts : getOtherTypes}>Next</button>}
+        {searching && (
+          <>
+            <div className = "instantSearchWrapper">
+                <InstantSearch searchClient = {searchClient} indexName="Posts">
+                  <SearchBox className = "searchBox"/>
+                  <Hits hitComponent = {Hit} />
+                </InstantSearch>
             </div>
+            <button className = "exitSearch" onClick={() => setSearching(false)}>Exit</button>
+          </>
+        )}
 
-            <Loader show = {loading} />
-            
-            {feedBottom && <span>You have reached the end!</span>}
+        {!searching && (
+        <>
+          <div className = "mainLinkWrapper">
+            <div className = "mainLinks">
+                    <button style={{background: (currentBtn === "all") ? "gray" : null}} onClick = {() => all() && setCurrentBtn("all")}>
+                      All
+                    </button>
+                    <button style={{background: (currentBtn === "investor") ? "red" : null}} onClick = {() => investor() && setCurrentBtn("investor")}>
+                      Investors
+                    </button>
+                    <button style={{background: (currentBtn === "investment") ? "blue" : null}} onClick = {() => investment() && setCurrentBtn("investment")}>
+                      Investment
+                    </button>
+                    <button style={{background: (currentBtn === "mentor") ? "orange" : null}} onClick = {() => mentor() && setCurrentBtn("mentor")}>
+                      Mentors
+                    </button>
+                    <button onClick={() => setSearching(true)}>
+                      Search
+                    </button>
+            </div>
+          </div>
+            <main className = "pageIndexAlign">
+              <Feed posts = {posts} />
 
-          </main>
+              <div>
+                {!loading && !feedBottom && (posts.length === numOfPosts) && <button className = "generalButton" onClick = {(currentBtn === "all") ? getPosts : getOtherTypes}>Next</button>}
+              </div>
+
+              <Loader show = {loading} />
+              
+              {feedBottom && <span>You have reached the end!</span>}
+
+            </main>
+          </>
+          )}
       </>)
     }
 
