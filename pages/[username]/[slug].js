@@ -1,13 +1,18 @@
-import { firestore, getUser, postToJSON } from '../../library/firebase';
+import { firestore, getUser, postToJSON, auth } from '../../library/firebase';
 import AuthCheck from "../../components/AuthCheck";
 import HeartButton from "../../components/HeartButton";
-import { doc, getDocs, getDoc, collection, query, limit, getFirestore, collectionGroup } from 'firebase/firestore';
+import { doc, getDocs, getDoc, collection, query, limit, getFirestore, collectionGroup, setDoc, orderBy, where } from 'firebase/firestore';
 import PostContent from "../../components/PostContent";
-import { UserContext } from "../../library/context"
+
+import CommentList from "../../components/CommentList";
+import { UserContext } from "../../library/context";
+import { useRouter } from 'next/router';
+import toast from 'react-hot-toast';
+import uniqid from 'uniqid';
 
 import Link from 'next/link';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 export async function getStaticProps({ params }) {
     const { username, slug } = params;
@@ -85,6 +90,77 @@ export default function Post(props) {
                     </aside> 
                 </main>
             </div>
+
+            <div className = "commentSectionWrapper">
+                <CommentList post = {post} />
+                <CommentSection post = {post} />
+            </div>
         </AuthCheck>
+    )
+}
+
+function CommentSection({post}) {
+    const router = useRouter();
+    console.log(post)
+    
+    const [comment, setComment] = useState('');
+    const commentId = uniqid;
+
+    const isValid = comment.length !== 0;
+
+    const createComment = async (e) => {
+        e.preventDefault();
+        const currentUserId = auth.currentUser.uid;
+        const slug = post.slug;
+        const uid = post.uid;
+        const userName = collection(firestore, "username");
+        const userNameQuery = query(userName, where("uid", "==", currentUserId));
+        const username = (await getDocs(userNameQuery));
+        const ref = doc(firestore, 'users', post.id, 'posts', post.slug, "comments", commentId);
+        
+        const today = new Date();
+        const currentDate = `${today.getFullYear()}-${today.getDate()}-${(today.getMonth()+1)}`;
+        const monthsDict = {"1": "January", "2": "February", "3": "March", "4": "April", "5": "May", "6": "June", "7": "July", "8": "August", "9": "September", "10": "October", "11": "November", "12": "December"};
+        const dayValue = currentDate.substring(5, 7);
+        const monthNumber = (currentDate.length != 9) ? currentDate.substring(8, 10) : currentDate.substring(8, 9);
+        const monthString = monthsDict[monthNumber];
+        const yearValue = currentDate.substring(0, 4);
+
+        const data = {
+            comment,
+            commentId,
+            currentUserId,
+            slug,
+            uid,
+            username,
+            year: parseInt(yearValue),
+            day: parseInt(dayValue),
+            month: `${monthString}`,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+            heartCount: 0,
+        };
+
+        await setDoc(ref, data);
+
+        toast.success('Comment created!');
+
+        router.push(`/admin/${slug}`);
+    };
+
+    return (
+        <>
+            <form onSubmit={createComment}>
+                <input
+                    value = {comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Type comment here..."
+                />
+
+                <button type="submit" disabled={!isValid}>
+                    Create
+                </button>
+            </form>
+        </>
     )
 }

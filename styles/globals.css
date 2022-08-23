@@ -545,6 +545,7 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 
 .wrapperWrapper {
   display: flex;
+  height: 70vh;
   flex-direction: row;
   margin-top: 4rem;
 }
@@ -600,13 +601,13 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 .formBody {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
+  row-gap: 3vh;
   padding: 1rem;
 }
 
 .formBody textarea{
   width: 50vw;
-  height: max-content;
+  height: 12vh;
   background: #f1f1f1;
   outline: none;
   border: none;

@@ -14,11 +14,14 @@ export default function PostContent({ post }) {
     const postHours = timeString.substr(12, 1);
     const utcHours = new Date().getUTCHours();
     const timeZoneHours = new Date().getHours();
-    const timeZoneDifference = parseInt(utcHours) - parseInt(timeZoneHours);
-    const amOrPm = ((parseInt(postHours) - timeZoneDifference) >= 0) ? "PM" : "AM";
-    let actualHour = Math.abs(parseInt(postHours) + timeZoneDifference);
-    actualHour = (actualHour === 0) ? 12 : actualHour;
-
+    let timeZoneDifference = timeZoneHours - parseInt(utcHours);
+    const fixedPostHour = (postHours === "0") ? 12 : (parseInt(postHours) > 12) ? (parseInt(postHours)  - 12) : parseInt(postHours);
+    const amOrPm = (fixedPostHour > 12) ? (Math.abs(fixedPostHour - timeZoneDifference) < 12) ? "PM" : "AM": (Math.abs(fixedPostHour + timeZoneDifference) < 12) ? "PM" : "AM";
+    timeZoneDifference = 24 - Math.abs(timeZoneDifference)
+    //let actualHour = (timeZoneDifference < 0) ? parseInt(postHours) + timeZoneDifference : parseInt(postHours) - timeZoneDifference;
+    //actualHour = (actualHour === 0) ? 12 : (actualHour > 12) ? (actualHour - 12) : actualHour ;
+    let actualHour = (fixedPostHour < 12) ? (fixedPostHour + timeZoneDifference): (fixedPostHour - timeZoneDifference);
+    actualHour = timeZoneDifference + utcHours; 
     return (
       <>
         <div className = "postContentTop">

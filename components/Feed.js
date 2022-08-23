@@ -37,11 +37,13 @@ function PostItem({ post, admin = false }) {
     return (
         <div className = "wholeFeed">
             <div className = "topOfFeedCard">
-                <Link href={`/${post.username}/${post.slug}`}>  
+                {(post.published) ? (<Link href={`/${post.username}/${post.slug}`}>  
                     <a className = "feedCardTitle">
                         <h2>{post.title}</h2>
                     </a>
-                </Link>
+                </Link>) :(<a className = "feedCardTitle">
+                                <h2>{post.title}</h2>
+                            </a>)}
 
                 <Link href = {`/${post.username}`}> 
                     <div className = "userInfo">
@@ -53,9 +55,9 @@ function PostItem({ post, admin = false }) {
                 </ Link>
             </div>
 
-            <Link href={`/${post.username}/${post.slug}`}>
+            {(post.published) && (<Link href={`/${post.username}/${post.slug}`}>
                 <div className = "feedLink"></div>
-            </Link>
+            </Link>)}
 
             <div className = "feedHeader">
                     {post.header}
