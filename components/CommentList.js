@@ -14,10 +14,7 @@ export default function CommentList({post}) {
     return (
         <>
             <div className = "wrapper">
-                <h1>Comment Section</h1>
-                <div style = {{marginTop: "5rem"}}>
-                    <CommentsFeed comments = {comments} admin/>
-                </div>
+                    <CommentsFeed comments = {comments} />
             </div>
         </>
     );

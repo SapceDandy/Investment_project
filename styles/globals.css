@@ -700,3 +700,96 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   border-radius: 10px;
 }
 /*END POST CONTENT*/
+
+/*COMMENT SECTION*/
+.commentSectionWrapper {
+  background: white;
+  margin-top: 2rem;
+}
+
+.commentSectionTop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.wholeFeedComments {
+  display: flex;
+  width: 80vw;
+  height: max-content;
+  flex-direction: column;
+  background: #f1f1f1;
+  border-radius: 20px;
+  margin-bottom: 2rem;
+  padding: 1rem 2rem 1rem 2rem;
+}
+
+.wholeFeedComments .topLevelOfComment {
+  display: flex;
+  width: 100%;
+}
+
+.spanLeft {
+  display: flex;
+  width: 100%;
+  justify-content: left;
+}
+
+.spanRight {
+  display: flex;
+  width: 20%;
+  justify-content: right;
+  font-weight: bold;
+}
+
+.wholeFeedComments .topLevelOfComment .spanLeft {
+  background: white;
+  padding: .5rem 1rem;
+  border-radius: 20px;
+}
+
+.wholeFeedComments h2 {
+  display: flex;
+  width: 100%;
+  background-color: aqua;
+}
+
+.bottomLevelOfComment {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1rem;
+}
+
+.commentUsername {
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.createNewCommentWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.createNewCommentWrapper input {
+  padding: .5rem;
+  width: 30vw;
+  border-radius: 20px 0px 0px 20px;
+  outline: none;
+  border-style: solid;
+  border-color: #dddddd9f;
+}
+
+.createNewCommentWrapper button {
+  padding: .5rem;
+  width: 5vw;
+  height: 5vh;
+  border-radius: 0px 20px 20px 0px;
+  border-style: none;
+  cursor: pointer;
+  pointer-events: all;
+}
+/*END COMMENT SECTION*/

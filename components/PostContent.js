@@ -2,26 +2,18 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 
 export default function PostContent({ post }) {
-    const createdAt = (typeof post?.createdAt === 'number') ? new Date(post.createdAt) : post.createdAt.toDate();
-    const timeString = createdAt.toISOString();
-    const monthsDict = {"01": "January", "02": "February", "03": "March", "04": "April", "05": "May", "06": "June", "07": "July", "08": "August", "09": "September", "10": "October", "11": "November", "12": "December"};
-    const day = (timeString[8] != 0) ? timeString.substr(8, 2) : timeString.substr(9, 1);
-    const monthNumber = timeString.substr(5, 2);
-    const monthString = monthsDict[monthNumber];
-    const year = timeString.substr(0, 4); 
-    const time = timeString.substr(13, 3);
+    const date = (typeof post?.createdAt === 'number') ? new Date(post?.createdAt) : post?.createdAt?.toDate();
+    const monthsDict = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"};
+    const month = date?.getMonth() + 1;
+    const monthString = monthsDict[month];
+    const day = date?.getDate();
+    const year = date?.getFullYear();
+    let hours = date?.getHours();
+    let amOrPM = (hours >= 12) ? "PM" : "AM";
+    hours = (hours > 12) ? (hours - 12) : (hours === 0) ? 12 : hours;
+    let minutes = date?.getMinutes();
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
     
-    const postHours = timeString.substr(12, 1);
-    const utcHours = new Date().getUTCHours();
-    const timeZoneHours = new Date().getHours();
-    let timeZoneDifference = timeZoneHours - parseInt(utcHours);
-    const fixedPostHour = (postHours === "0") ? 12 : (parseInt(postHours) > 12) ? (parseInt(postHours)  - 12) : parseInt(postHours);
-    const amOrPm = (fixedPostHour > 12) ? (Math.abs(fixedPostHour - timeZoneDifference) < 12) ? "PM" : "AM": (Math.abs(fixedPostHour + timeZoneDifference) < 12) ? "PM" : "AM";
-    timeZoneDifference = 24 - Math.abs(timeZoneDifference)
-    //let actualHour = (timeZoneDifference < 0) ? parseInt(postHours) + timeZoneDifference : parseInt(postHours) - timeZoneDifference;
-    //actualHour = (actualHour === 0) ? 12 : (actualHour > 12) ? (actualHour - 12) : actualHour ;
-    let actualHour = (fixedPostHour < 12) ? (fixedPostHour + timeZoneDifference): (fixedPostHour - timeZoneDifference);
-    actualHour = timeZoneDifference + utcHours; 
     return (
       <>
         <div className = "postContentTop">
@@ -37,14 +29,14 @@ export default function PostContent({ post }) {
                 </Link>{' '}
               </div>
               <div>
-                {`${monthString} ${day}, ${year} at ${actualHour}${time} ${amOrPm}`}
+                {`${monthString} ${day}, ${year} @ ${hours}:${minutes} ${amOrPM}`}
               </div>
             </span>
           </div>
         </div>
         <div className = "postContentSpan"><ReactMarkdown>{post?.header}</ReactMarkdown></div>
         <div className = "postContentSpan"><ReactMarkdown>{post?.content}</ReactMarkdown></div>
-        <form>
+        <form className="createNewResponseWrapper">
           <label for = "response">If you are interested send a response</label><br />
           <input placeholder="Enter response here..." type = "text" id = "response" name = "response"></input>
           <input type = "submit" value = "Send" />
