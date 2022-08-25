@@ -2,7 +2,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  background: lightgrey;
+  background: rgb(222, 222, 222);
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
@@ -784,12 +784,224 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 }
 
 .createNewCommentWrapper button {
+  display: flex;
+  background: black;
+  color: white;
   padding: .5rem;
   width: 5vw;
   height: 5vh;
   border-radius: 0px 20px 20px 0px;
+  align-items: center;
+  justify-content: center;
   border-style: none;
   cursor: pointer;
   pointer-events: all;
+  transition: all .2s ease-in-out;
+}
+
+.createNewCommentWrapper button:hover {
+  background: dimgrey;
+  transition: all .2s ease-in-out;
+}
+
+.createNewCommentWrapper button:disabled {
+  color: rgba(71, 71, 71, 0.496);
+  background: #f1f1f1;
+  transition: all .2s ease-in-out;
 }
 /*END COMMENT SECTION*/
+
+/*SUBCOMMENT*/
+.createNewSubCommentWrapper {
+  width: 80vw;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+}
+
+.wholeFeedSubComments {
+  display: flex;
+  width: 60vw;
+  height: max-content;
+  flex-direction: column;
+  background: #f1f1f1;
+  border-radius: 20px;
+  margin-bottom: 2rem;
+  padding: 1rem 2rem 1rem 2rem;
+}
+
+.wholeFeedSubComments .topLevelOfComment {
+  display: flex;
+  width: 100%;
+}
+
+.spanLeft {
+  display: flex;
+  width: 100%;
+  justify-content: left;
+}
+
+.spanRight {
+  display: flex;
+  width: 20%;
+  justify-content: right;
+  font-weight: bold;
+}
+
+.wholeFeedSubComments .topLevelOfComment .spanLeft {
+  background: white;
+  padding: .5rem 1rem;
+  border-radius: 20px;
+}
+
+.wholeFeedSubComments h2 {
+  display: flex;
+  width: 100%;
+}
+
+.shiftToRight {
+  display: flex;
+  width: 100%;
+  background: blue;
+  justify-content: right;
+}
+
+.createNewSubCommentWrapperBottomSpacing {
+  display: flex;
+  width: 80vw;
+  margin-bottom: 4rem;
+  justify-content: right;
+}
+
+.createNewSubCommentWrapperReplies{
+  display: flex;
+  width: 80vw;
+  justify-content: right;
+}
+
+.createNewSubCommentWrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.createNewSubCommentWrapper input {
+  padding: .5rem;
+  width: 30vw;
+  border-radius: 20px 0px 0px 20px;
+  outline: none;
+  border-style: solid;
+  border-color: #dddddd9f;
+}
+
+.createNewSubCommentWrapper button {
+  display: flex;
+  background: black;
+  color: white;
+  padding: .5rem;
+  width: 5vw;
+  height: 5vh;
+  border-radius: 0px 20px 20px 0px;
+  align-items: center;
+  justify-content: center;
+  border-style: none;
+  cursor: pointer;
+  pointer-events: all;
+  transition: all .2s ease-in-out;
+}
+
+.createNewSubCommentWrapper button:hover {
+  background: dimgrey;
+  transition: all .2s ease-in-out;
+}
+
+.createNewSubCommentWrapper button:disabled {
+  color: rgba(71, 71, 71, 0.496);
+  background: #f1f1f1;
+  transition: all .2s ease-in-out;
+}
+/*END SUBCOMMENT*/
+
+/*SIGNUP*/
+.signUpWrapper {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.signUpForm {
+  display: flex;
+  width: 40vw;
+  flex-direction: column;
+  row-gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.signUpForm button {
+  border: none;
+  background: black;
+  color: white;
+  border-radius: 20px;
+  padding: .5rem 1rem;
+  transition: all .2s ease-in-out;
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.signUpForm button:hover {
+  background: dimgray;
+}
+
+.signUpForm .submitSignUpForm {
+  display: flex;
+  width: 100%;
+  justify-content: left;
+}
+
+.signUpInfo {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: right;
+  justify-content: right;
+  row-gap: .5rem;
+}
+
+.signUpInfo input {
+  width: 50%;
+  outline: none;
+  border: none;
+  border-radius: 20px;
+  padding: .5rem 1rem;
+}
+
+.passwordAndSee {
+  display: flex;
+  flex-direction: row;
+  column-gap: .5rem;
+  transition: all .2s ease-in-out;
+}
+
+.passwordInfo {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.goggleSingInBtn {
+  display: flex;
+  border: none;
+  border-radius: 10px;
+  align-items: center;
+  padding: .5rem;
+  column-gap: .5rem;
+}
+/*END SIGNUP*/

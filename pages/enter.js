@@ -1,12 +1,13 @@
 import { auth, firestore, googleAuthProvider } from "../library/firebase"
 import { doc, writeBatch, getDoc, getFirestore } from 'firebase/firestore';
-import { signInWithPopup, signInAnonymously, signOut } from 'firebase/auth';
+import { signInWithPopup, signInAnonymously, signOut, getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { UserContext } from "../library/context";
 import { useEffect, useState, useCallback, useContext } from 'react';
 import debounce from 'lodash.debounce';
 import { useRouter } from 'next/router';
 import Index from "../pages/index";
 import Link from "next/link";
+import { async } from "@firebase/util";
 //import { delay } from "lodash";
 
 export default function EnterPage(props) {
@@ -33,20 +34,81 @@ function Redirect({ to }) {
 }
 
 function SignInButton() {
-    const signInWithGoogle = async() => {
-        await signInWithPopup(auth, googleAuthProvider);
-    }
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [seePassword, setSeePassword] = useState(false)
+  const [passwordCheck, setPasswordCheck] = useState("")
+  const [seePasswordCheck, setSeePasswordCheck] = useState(false)
+  const auth = getAuth();
 
-    return (
-        <>
-          <button  onClick = {signInWithGoogle}>
-              <img src = {'/google-png.png'} width="30px"/> Sign in with Google
-          </button>
-          <button onClick={() => signInAnonymously(auth)}>
-              Sign in Anonymously
-          </button>
-        </>
-    );
+  const signInWithGoogle = async() => {
+      await signInWithPopup(auth, googleAuthProvider);
+  }
+
+  async function onSubmit() {
+    signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log("Error Code: ", errorCode);
+      console.log("Error Message: ", errorMessage);
+    });
+  }
+
+  return (
+    <div className = "signUpWrapper">
+      <form className = "signUpForm">
+        <div className = "signUpInfo">
+          <label for = "email">Email</label>
+          <input type = "text" id = "email" name = "Email" value = {email} onChange = {(e) => setEmail(e.target.value)}/>
+        </div>
+        {(email !== "") && !(/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/.test(email)) && (<span style = {{color: "red"}}>You must enter a valid email</span>)}
+        
+        <div className = "signUpInfo">
+          <label for = "password">Password</label>
+          <div className = "passwordAndSee">
+            <input type = {(seePassword) ? "text" : "password"} id = "password" name = "password" value = {password} onChange = {(e) => setPassword(e.target.value)} />
+            <button type = "button" onClick={() => setSeePassword(!seePassword)}>See</button>
+          </div>
+        </div>
+
+        <div className = "passwordInfo"> 
+          <span>{`At least one digit [0-9]`}</span>
+          <span>{`At least one lowercase character [a-z]`}</span>
+          <span>{`At least one uppercase character [A-Z]`}</span>
+          <span>{`At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\]`}</span>
+          <span>{`At least 8 characters in length, but no more than 32`}</span>
+        </div>
+
+        {!(password.match(`^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}[]:;<>,.?/~_+-=|\]).{8,32}$`)) && (password !== "") && (<span style = {{color: "red"}}>Your password must meet the requirements shown above</span>)}
+
+        <div className = "signUpInfo">
+          <label for = "passwordCheck">Password Check</label>
+          <div className = "passwordAndSee">
+            <input type = {(seePasswordCheck) ? "text" : "password"} id = "passwordCheck" name = "passwordCheck" value = {passwordCheck} onChange = {(e) => setPasswordCheck(e.target.value)} />
+            <button type = "button" onClick={() => setSeePasswordCheck(!seePasswordCheck)}>See</button>
+          </div>
+        </div>
+
+        {((password !== passwordCheck) && (passwordCheck !== "")) && (
+          <span style = {{color: "red"}}>Theh information you entered in password must be the same as the information in password check</span>
+        )}
+        
+        <div className = "submitSignUpForm">
+          <button type = "submit" onClick = {() => onSubmit()}>Login</button>
+        </div>
+      </form>
+
+      <button className = "goggleSingInBtn" onClick = {signInWithGoogle}>
+          <img src = {'/google-png.png'} width="30px"/> Sign in with Google
+      </button>
+    </div>
+  );
 }
 
 /*function SignOutButton() {

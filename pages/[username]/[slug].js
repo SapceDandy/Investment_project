@@ -103,7 +103,6 @@ export default function Post(props) {
 }
 
 function MakeComment({post}) {
-    const router = useRouter();
     const { username } = useContext(UserContext);
     
     const [comment, setComment] = useState('');

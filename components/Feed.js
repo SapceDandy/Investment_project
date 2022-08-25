@@ -19,7 +19,7 @@ function DeletePostButton({ postRef }) {
         await deleteDoc(postRef);
         toast('post annihilated ', { icon: '🗑️' });
         }
-        router.reload()
+        //router.reload()
     };
 
     return (
