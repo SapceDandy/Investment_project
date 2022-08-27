@@ -1,14 +1,13 @@
-import { auth, firestore, googleAuthProvider } from "../library/firebase"
+import { googleAuthProvider, gitHubAuthProvider } from "../library/firebase"
 import { doc, writeBatch, getDoc, getFirestore } from 'firebase/firestore';
-import { signInWithPopup, signInAnonymously, signOut, getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithPopup, signInWithEmailAndPassword, getAuth, createUserWithEmailAndPassword, updateProfile  } from 'firebase/auth';
 import { UserContext } from "../library/context";
 import { useEffect, useState, useCallback, useContext } from 'react';
 import debounce from 'lodash.debounce';
 import { useRouter } from 'next/router';
-import Index from "../pages/index";
 import Link from "next/link";
-import { async } from "@firebase/util";
 //import { delay } from "lodash";
+
 
 export default function EnterPage(props) {
     const { user, username } = useContext(UserContext);
@@ -34,79 +33,138 @@ function Redirect({ to }) {
 }
 
 function SignInButton() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [seePassword, setSeePassword] = useState(false)
-  const [passwordCheck, setPasswordCheck] = useState("")
-  const [seePasswordCheck, setSeePasswordCheck] = useState(false)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [logInEmail, setLogInEmail] = useState("");
+  const [logInPassword, setLogInPassword] = useState("");
+  const [seeLogInPassword, setSeeLogInPassword] = useState(false);
+  const [seePassword, setSeePassword] = useState(false);
+  const [passwordCheck, setPasswordCheck] = useState("");
+  const [seePasswordCheck, setSeePasswordCheck] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("")
+  const regexEmail = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
+  const regexPassword = new RegExp(`^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[.!$%&.?]).{8,32}$`);
   const auth = getAuth();
 
   const signInWithGoogle = async() => {
-      await signInWithPopup(auth, googleAuthProvider);
+    await signInWithPopup(auth, googleAuthProvider)
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      alert(`${errorCode}: ${errorMessage}`)
+    });
   }
 
-  async function onSubmit() {
-    signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed in 
-      const user = userCredential.user;
-      // ...
+  const signUp = async() => {
+    await createUserWithEmailAndPassword(auth, email, password)
+    .then((currentUser) => {
+      return updateProfile(currentUser.user, {
+        displayName: `${firstName} ${lastName}`
+      })
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log("Error Code: ", errorCode);
-      console.log("Error Message: ", errorMessage);
+      alert(`${errorCode}: ${errorMessage}`)
+    });
+  }
+
+  const signIn = async() => {
+    await signInWithEmailAndPassword(auth, logInEmail, logInPassword)
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      alert(`${errorCode}: ${errorMessage}`)
+    });
+  }
+
+  const signInWithGitHub = async() => {
+    await signInWithPopup(auth, gitHubAuthProvider)
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      alert(`${errorCode}: ${errorMessage}`)
     });
   }
 
   return (
-    <div className = "signUpWrapper">
-      <form className = "signUpForm">
-        <div className = "signUpInfo">
-          <label for = "email">Email</label>
-          <input type = "text" id = "email" name = "Email" value = {email} onChange = {(e) => setEmail(e.target.value)}/>
-        </div>
-        {(email !== "") && !(/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/.test(email)) && (<span style = {{color: "red"}}>You must enter a valid email</span>)}
-        
-        <div className = "signUpInfo">
-          <label for = "password">Password</label>
-          <div className = "passwordAndSee">
-            <input type = {(seePassword) ? "text" : "password"} id = "password" name = "password" value = {password} onChange = {(e) => setPassword(e.target.value)} />
-            <button type = "button" onClick={() => setSeePassword(!seePassword)}>See</button>
+    <div className = "signUpInWrapper">
+      <div className = "formWrapper">
+        <form className = "signUpForm">
+          <h3>SignUp</h3>
+          <div className = "signUpInfo">
+            <label for = "email">Email</label>
+            <input type = "text" id = "email" name = "Email" value = {email} onChange = {(e) => setEmail(e.target.value)}/>
           </div>
-        </div>
+          {(email !== "") && !(regexEmail.test(email)) && (<span style = {{color: "red"}}>You must enter a valid email</span>)}
 
-        <div className = "passwordInfo"> 
-          <span>{`At least one digit [0-9]`}</span>
-          <span>{`At least one lowercase character [a-z]`}</span>
-          <span>{`At least one uppercase character [A-Z]`}</span>
-          <span>{`At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\]`}</span>
-          <span>{`At least 8 characters in length, but no more than 32`}</span>
-        </div>
-
-        {!(password.match(`^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}[]:;<>,.?/~_+-=|\]).{8,32}$`)) && (password !== "") && (<span style = {{color: "red"}}>Your password must meet the requirements shown above</span>)}
-
-        <div className = "signUpInfo">
-          <label for = "passwordCheck">Password Check</label>
-          <div className = "passwordAndSee">
-            <input type = {(seePasswordCheck) ? "text" : "password"} id = "passwordCheck" name = "passwordCheck" value = {passwordCheck} onChange = {(e) => setPasswordCheck(e.target.value)} />
-            <button type = "button" onClick={() => setSeePasswordCheck(!seePasswordCheck)}>See</button>
+          <div className = "fullName">
+            <div>
+              <label for = "firstName">First Name</label>
+              <input type = "text" id = "firstName" name = "firstName" value = {firstName} onChange = {(e) => setFirstName(e.target.value)} />
+            </div>
+            <div>
+              <label for = "lastName">Last Name</label>
+              <input type = "text" id = "lastName" name = "lastName" value = {lastName} onChange = {(e) => setLastName(e.target.value)} />
+            </div>
           </div>
-        </div>
+          
+          <div className = "signUpInfo">
+            <label for = "password">Password</label>
+            <div className = "passwordAndSee">
+              <input type = {(seePassword) ? "text" : "password"} id = "password" name = "password" value = {password} onChange = {(e) => setPassword(e.target.value)} />
+              <button type = "button" style = {{background: (seePassword) ? "dimgrey" : null}} onClick={() => setSeePassword(!seePassword)} disabled = {(password === "")}>See</button>
+            </div>
+          </div>
 
-        {((password !== passwordCheck) && (passwordCheck !== "")) && (
-          <span style = {{color: "red"}}>Theh information you entered in password must be the same as the information in password check</span>
-        )}
-        
-        <div className = "submitSignUpForm">
-          <button type = "submit" onClick = {() => onSubmit()}>Login</button>
-        </div>
-      </form>
+            <span style = {{textAlign: "center"}}>{`At least one digit [0-9], one lowercase character [a-z], one uppercase character [A-Z], one special character .!$%&.?, and at least 8 characters in length, but no more than 32`}</span>
 
-      <button className = "goggleSingInBtn" onClick = {signInWithGoogle}>
-          <img src = {'/google-png.png'} width="30px"/> Sign in with Google
-      </button>
+          {!(regexPassword.test(password)) && (password !== "") && (<span style = {{color: "red"}}>Your password must meet the requirements shown above</span>)}
+
+          <div className = "signUpInfo">
+            <label for = "passwordCheck">Password Check</label>
+            <div className = "passwordAndSee">
+              <input type = {(seePasswordCheck) ? "text" : "password"} id = "passwordCheck" name = "passwordCheck" value = {passwordCheck} onChange = {(e) => setPasswordCheck(e.target.value)} />
+              <button type = "button" style = {{background: (seePasswordCheck) ? "dimgrey" : null}} onClick={() => setSeePasswordCheck(!seePasswordCheck)} disabled = {(passwordCheck === "")}>See</button>
+            </div>
+          </div>
+
+          {((password !== passwordCheck) && (passwordCheck !== "")) && (
+            <span style = {{color: "red"}}>The information you entered in password must be the same as the information in password check</span>
+          )}
+
+          <button className = "submitSignUpForm" type = "button" onClick = {() => signUp()} disabled = {(password !== passwordCheck) || !(regexPassword.test(password)) || !(regexEmail.test(email))}>SignUp</button>
+        </form>
+
+        <form className = "signUpForm">
+          <h3>SignIn</h3>
+          <div className = "signUpInfo">
+            <label for = "logInEmail">Email</label>
+            <input type = "text" id = "logInmail" name = "Email" value = {logInEmail} onChange = {(e) => setLogInEmail(e.target.value)}/>
+          </div>
+          
+          <div className = "signUpInfo">
+            <label for = "logInpassword">Password</label>
+            <div className = "passwordAndSee">
+              <input type = {(seeLogInPassword) ? "text" : "password"} id = "password" name = "password" value = {logInPassword} onChange = {(e) => setLogInPassword(e.target.value)} />
+              <button type = "button" style = {{background: (seeLogInPassword) ? "dimgrey" : null}} onClick={() => setSeeLogInPassword(!seeLogInPassword)} disabled = {(logInPassword === "")}>See</button>
+            </div>
+          </div>
+
+          <button className = "submitSignUpForm" type = "button" onClick = {() => signIn()} disabled = {(logInPassword === "") || (logInEmail === "")}>Login</button>
+        </form>
+      </div>
+
+      <div style = {{display: "flex", flexDirection: "row", columnGap: "2vw"}}>
+        <button className = "popUpSingInBtn" onClick = {signInWithGoogle}>
+            <img src = {'/google-png.png'} width="30px"/> Sign in with Google
+        </button>
+
+        <button className = "popUpSingInBtn" onClick = {signInWithGitHub}>
+            <img src = {'/github.png'} width="30px"/> Sign in with GitHub
+        </button>
+      </div>
     </div>
   );
 }
@@ -127,11 +185,9 @@ function UsernameForm() {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    // Create refs for both documents
     const userDoc = doc(getFirestore(), 'users', user.uid);
     const usernameDoc = doc(getFirestore(), 'usernames', formValue);
 
-    // Commit both docs together as a batch write.
     const batch = writeBatch(getFirestore());
     batch.set(userDoc, { username: formValue, photoURL: user.photoURL, displayName: user.displayName });
     batch.set(usernameDoc, { uid: user.uid });
@@ -140,11 +196,9 @@ function UsernameForm() {
   };
 
   const onChange = (e) => {
-    // Force form value typed in form to match correct format
     const val = e.target.value.toLowerCase();
     const re = /^(?=[a-zA-Z0-9._]{3,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
 
-    // Only set form value if length is < 3 OR it passes regex
     if (val.length < 3) {
       setFormValue(val);
       setLoading(false);
@@ -162,8 +216,6 @@ function UsernameForm() {
     checkUsername(formValue);
   }, [formValue]);
 
-  // Hit the database for username match after each debounced change
-  // useCallback is required for debounce to work
   const checkUsername = useCallback(
     debounce(async (username) => {
       if (username.length >= 3) {

@@ -551,13 +551,16 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 }
 
 .formWrapper {
-  width: 60vw;
+  width: 60vw; 
   display: flex;
-  border-radius: 20px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: white;
+}
+
+.formWrapper section {
+  background-color: white;
+  border-radius: 20px;
 }
 
 .wrapperWrapper aside{
@@ -923,23 +926,22 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 /*END SUBCOMMENT*/
 
 /*SIGNUP*/
-.signUpWrapper {
+.signUpInWrapper {
   display: flex;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-bottom: 2rem;
 }
 
 .signUpForm {
   display: flex;
-  width: 40vw;
+  background: lightgrey;
+  width: 32vw;
   flex-direction: column;
   row-gap: 1.5rem;
+  padding: 1rem;
+  border-radius: 20px;
   align-items: center;
   justify-content: center;
   margin-bottom: 2rem;
@@ -963,7 +965,18 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 .signUpForm .submitSignUpForm {
   display: flex;
   width: 100%;
-  justify-content: left;
+  justify-content: center;
+}
+
+.signUpForm .submitSignUpForm:disabled {
+  color: dimgrey;
+  background-color: #f1f1f1;
+  pointer-events: none;
+}
+
+.signUpForm  h3 {
+  display: flex;
+  margin: -.3rem 0rem;
 }
 
 .signUpInfo {
@@ -976,11 +989,17 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 }
 
 .signUpInfo input {
-  width: 50%;
+  width: 100%;
   outline: none;
   border: none;
   border-radius: 20px;
   padding: .5rem 1rem;
+}
+
+.signUpInfo button:disabled {
+  color: dimgrey;
+  background-color: #f1f1f1;
+  pointer-events: none;
 }
 
 .passwordAndSee {
@@ -996,12 +1015,35 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   flex-direction: column;
 }
 
-.goggleSingInBtn {
+.popUpSingInBtn {
   display: flex;
   border: none;
   border-radius: 10px;
   align-items: center;
   padding: .5rem;
   column-gap: .5rem;
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.formWrapper {
+  display: flex;
+  background-color: transparent;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 5vw;
+}
+
+.fullName {
+  display: flex;
+  flex-direction: row;
+}
+
+.fullName input {
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  padding: .5rem;
+  margin-top: .5rem;
 }
 /*END SIGNUP*/

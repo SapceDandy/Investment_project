@@ -19,7 +19,7 @@ export async function getStaticProps({ params }) {
     const userDoc = await getUser(username);
 
     let post;
-    let path; 
+    let path;
 
     if (userDoc) {
         const getPosts = doc(userDoc.ref, "posts", slug);
@@ -54,12 +54,10 @@ export async function getStaticPaths() {
 }
 
 export default function Post(props) {
-    const getPosts = doc(firestore, props.path);
+    const getPosts = doc(firestore, props?.path);
     const [realtimePost] = useDocumentData(getPosts);
 
     const post = realtimePost || props.post;
-
-    const { user: currentUser } = useContext(UserContext);
 
     return (
         <AuthCheck
@@ -75,19 +73,19 @@ export default function Post(props) {
                         <PostContent post = {post} />
                     </section>
 
-                    <aside>
-                        {/*<p>
-                        <strong>{post.heartCount || 0} 🤍</strong>
-                        </p>   
-                        <HeartButton postRef = {getPosts} />*/}
-                        {currentUser?.uid === post.uid && (
-                        <Link href={`/admin/${post.slug}`}>
+                    {/*<aside>
+                        {currentUser?.uid === post?.uid && (
+                        <Link href={`/admin/${post?.slug}`}>
                             <button className = "generalButton">Edit</button>
                         </Link>)}
-                        {currentUser?.uid !== post.uid && (
-                            <button className = "generalButton">Save</button>
+                        {(currentUser?.uid !== post?.uid) && (
+                            <button className = "generalButton" onClick = {() => trackPost()}>Track Post</button>
                         )}
-                    </aside> 
+
+                        {(currentUser?.uid !== post?.uid) && (
+                            <button className = "generalButton" onClick = {() => trackPost()}>Stop Tracking</button>
+                        )}
+                    </aside> */}
                 </main>
             </div>
 

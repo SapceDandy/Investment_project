@@ -1,9 +1,38 @@
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
-import { auth } from "../library/firebase"
+import { serverTimestamp, docs, doc, deleteDoc, getDocs, getDoc, collection, query, limit, getFirestore, collectionGroup, setDoc, orderBy, where, addDoc } from 'firebase/firestore';
+import { auth, firestore } from "../library/firebase";
+import { useDocumentData } from 'react-firebase-hooks/firestore';
+import toast from 'react-hot-toast';
 
 export default function PostContent({ post }) {
   const currentUser = auth.currentUser.uid;
+
+  const TrackPost = async() => {
+    const ref = doc(firestore, "trackPost", currentUser, "tracking", post?.slug);
+
+    const data = {
+        slug: post.slug,
+        uid: post.uid
+    }
+
+    await setDoc(ref, data);
+
+    toast.success('Post Is Being Tracked!');
+  }
+
+  async function DeleteTracking() {
+    const ref = doc(firestore, "trackPost", currentUser, "tracking", post?.slug);
+    const doIt = confirm('Are you sure!');
+    if (doIt) {
+    await deleteDoc(ref);
+    toast('You are no longer tracking ', { icon: '🗑️' });
+    }
+  }
+
+  const getTracking = doc(firestore, "trackPost", currentUser, "tracking", post?.slug);
+  const [tracked] = useDocumentData(getTracking);
+  
   const date = (typeof post?.createdAt === 'number') ? new Date(post?.createdAt) : post?.createdAt?.toDate();
   const monthsDict = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"};
   const month = date?.getMonth() + 1;
@@ -44,6 +73,19 @@ export default function PostContent({ post }) {
         <input type = "submit" value = "Send" />
       </form>)}
       <span className = "postStatusSpan" style = {{color: (post?.status === "investor") ? "red" : (post?.status === "investment") ? "blue" : (post?.status === "mentor") ? "orange" : "lightgrey"}}>#<ReactMarkdown>{post?.status}</ReactMarkdown></span>
+      <aside>
+        {currentUser === post?.uid && (
+        <Link href={`/admin/${post?.slug}`}>
+            <button className = "generalButton">Edit</button>
+        </Link>)}
+        {(currentUser !== post?.uid) && (tracked?.slug !== post?.slug) && (
+            <button className = "generalButton" onClick = {() => TrackPost()}>Track Post</button>
+        )}
+
+        {(currentUser?.uid !== post?.uid) && (tracked?.slug === post?.slug) && (
+            <button className = "generalButton" onClick = {() => DeleteTracking()}>Stop Tracking</button>
+        )}
+      </aside> 
     </> 
   );
 }

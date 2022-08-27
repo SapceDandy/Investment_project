@@ -68,13 +68,14 @@ function Comment({ comments }) {
                         <span>💕 {post.heartCount} Likes</span>
                     </footer>*/}
 
-                    {user && (
+                    
                         <div className = "adminFeed spanRight">
                             <button style = {{background: (showSubs) ? "dimgrey" : null}} onClick = {() => (showSubs) ? setShowSubs(false) : setShowSubs(true)}>Comments {/*(counter !== 0) ? `${counter}` : null*/}</button>
                             <button style = {{background: (userReplied) ? "dimgrey" : null}} onClick = {() => (userReplied) ? setUserReplied(false) : setUserReplied(true)}>Reply</button>
-                            <DeleteCommentButton commentRef = {commentRef} />
+                            {(user === comments?.uid) && (
+                                <DeleteCommentButton commentRef = {commentRef} />
+                            )}
                         </div>
-                    )}
                 </div>
             </div>
             <div>

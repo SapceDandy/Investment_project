@@ -14,7 +14,7 @@ import toast from 'react-hot-toast';
 export default function AdminPostEdit(props) {
   return (
     <AuthCheck>
-      <div className="postManagerWrapper">
+      <div className = "postManagerWrapper">
         <PostManager />
       </div>
     </AuthCheck>
@@ -78,7 +78,7 @@ function PostForm({ defaultValues, postRef, preview }) {
 
   return (
     <>
-      <form onSubmit={handleSubmit(updatePost)}>
+      <form className = "createPostForm" onSubmit={handleSubmit(updatePost)}>
         {/*preview && (
           <div>
             <ReactMarkdown>{watch('header')}</ReactMarkdown>

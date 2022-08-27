@@ -5,7 +5,7 @@ import { Hit } from "../components/HitFeed"
 import { InstantSearch, SearchBox, Hits } from 'react-instantsearch-hooks-web';
 import { firestore, postToJSON } from '../library/firebase';
 import { UserContext } from "../library/context";
-import { Timestamp, query, where, orderBy, limit, collectionGroup, getDocs, startAfter} from 'firebase/firestore';
+import { Timestamp, query, where, orderBy, limit, collectionGroup, collection, getDocs, startAfter} from 'firebase/firestore';
 import { useState, useContext } from "react";
 
 const numOfPosts = 5;
@@ -65,6 +65,35 @@ export default function Home({uploadPosts}) {
 
     setFeedBottom(false)
     setPosts(ment);
+  }
+
+  async function tracking() {
+    const trackingDict = {};
+    const ref = collection(firestore, "trackPost", user?.uid, "tracking");
+    const refQuery = query(ref);
+    
+    const trackingDocs = (await getDocs(refQuery)).docs?.map((doc) => doc?.data());
+
+    trackingDocs.forEach((docs) => {
+      trackingDict[docs?.slug] = 1;
+    })
+
+    const newRef = collectionGroup(firestore, "posts")
+    const postsQuery = query(newRef, orderBy("updatedAt", "desc"), limit(numOfPosts))
+
+    let track = (await getDocs(postsQuery)).docs?.map((docs) => {
+      return (
+        (!(!trackingDict[docs?.id]) ?
+        postToJSON(docs) :
+        null)
+      )
+    });
+
+    track = track.filter((docs) => docs != null);
+
+    console.log("Track: ", track)
+    setFeedBottom(false)
+    setPosts(track);
   }
 
   async function all() {
@@ -151,12 +180,16 @@ export default function Home({uploadPosts}) {
                     <button style={{background: (currentBtn === "mentor") ? "orange" : null}} onClick = {() => mentor() && setCurrentBtn("mentor")}>
                       Mentors
                     </button>
+                    <button style={{background: (currentBtn === "tracking") ? "gray" : null}} onClick = {() => tracking() && setCurrentBtn("tracking")}>
+                      Tracking
+                    </button>
                     <button onClick={() => setSearching(true)}>
                       Search
                     </button>
             </div>
           </div>
             <main className = "pageIndexAlign">
+              {console.log(posts)}
               <Feed posts = {posts} />
 
               <div>

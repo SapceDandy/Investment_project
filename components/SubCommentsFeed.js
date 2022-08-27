@@ -28,7 +28,7 @@ function DeleteCommentButton({ subCommentRef }) {
 
 
 function Comment({ subComments }) {
-    const subCommentRef = doc(firestore, "users", subComments.uid, "posts", subComments.slug, "comments", subComments.lastPost, "subComments", subComments.subCommentId)
+    const subCommentRef = doc(firestore, "users", subComments?.uid, "posts", subComments?.slug, "comments", subComments?.lastPost, "subComments", subComments?.subCommentId)
     const { user } = useContext(UserContext);
 
     const date = (typeof subComments?.createdAt === 'number') ? new Date(subComments?.createdAt) : subComments?.createdAt?.toDate();
@@ -63,7 +63,10 @@ function Comment({ subComments }) {
                         <span>💕 {post.heartCount} Likes</span>
                     </footer>*/}
 
-                    {user && (
+                    {console.log("User ID: ", user.uid)}
+                    {console.log("Sub ID: ", subComments.uid)}
+
+                    {(user.uid === subComments.currentUserId) && (
                         <div className = "adminFeed spanRight">
                             <DeleteCommentButton subCommentRef={subCommentRef} />
                         </div>
