@@ -2,6 +2,7 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { serverTimestamp, docs, doc, deleteDoc, getDocs, getDoc, collection, query, limit, getFirestore, collectionGroup, setDoc, orderBy, where, addDoc } from 'firebase/firestore';
 import { auth, firestore } from "../library/firebase";
+import { useState } from "react";
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import toast from 'react-hot-toast';
 
@@ -23,16 +24,14 @@ export default function PostContent({ post }) {
 
   async function DeleteTracking() {
     const ref = doc(firestore, "trackPost", currentUser, "tracking", post?.slug);
-    const doIt = confirm('Are you sure!');
-    if (doIt) {
     await deleteDoc(ref);
     toast('You are no longer tracking ', { icon: '🗑️' });
-    }
   }
 
   const getTracking = doc(firestore, "trackPost", currentUser, "tracking", post?.slug);
   const [tracked] = useDocumentData(getTracking);
   
+  const [response, setResponse] = useState("")
   const date = (typeof post?.createdAt === 'number') ? new Date(post?.createdAt) : post?.createdAt?.toDate();
   const monthsDict = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"};
   const month = date?.getMonth() + 1;
@@ -67,25 +66,26 @@ export default function PostContent({ post }) {
       </div>
       <div className = "postContentSpan"><ReactMarkdown>{post?.header}</ReactMarkdown></div>
       <div className = "postContentSpan"><ReactMarkdown>{post?.content}</ReactMarkdown></div>
-      {currentUser !== post.uid && (<form className="createNewResponseWrapper">
+      {currentUser !== post.uid && (
+      <form className="createNewResponseWrapper">
         {/*<label for = "response">If you are interested send a response</label><br />*/}
-        <input placeholder="Responed if interested..." type = "text" id = "response" name = "response"></input>
-        <input type = "submit" value = "Send" />
+        <input placeholder="Responed if interested..." type = "text" id = "response" name = "response" value = {response} onChange = {(e) => setResponse(e.target.value)}></input>
+        <button type = "button" disabled = {response === ""} >Send</button>
       </form>)}
       <span className = "postStatusSpan" style = {{color: (post?.status === "investor") ? "red" : (post?.status === "investment") ? "blue" : (post?.status === "mentor") ? "orange" : "lightgrey"}}>#<ReactMarkdown>{post?.status}</ReactMarkdown></span>
-      <aside>
+      <div className = "postContentBottomRight">
         {currentUser === post?.uid && (
         <Link href={`/admin/${post?.slug}`}>
-            <button className = "generalButton">Edit</button>
+            <button className = "generalButtonBottomRight">Edit</button>
         </Link>)}
         {(currentUser !== post?.uid) && (tracked?.slug !== post?.slug) && (
-            <button className = "generalButton" onClick = {() => TrackPost()}>Track Post</button>
+            <button className = "generalButtonBottomRight" onClick = {() => TrackPost()}>Track Post</button>
         )}
 
         {(currentUser?.uid !== post?.uid) && (tracked?.slug === post?.slug) && (
-            <button className = "generalButton" onClick = {() => DeleteTracking()}>Stop Tracking</button>
+            <button className = "generalButtonBottomRight" onClick = {() => DeleteTracking()}>Stop Tracking</button>
         )}
-      </aside> 
+      </div> 
     </> 
   );
 }

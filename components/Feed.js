@@ -1,41 +1,43 @@
 import Link from "next/link";
 import { firestore } from "../library/firebase";
 import { UserContext } from "../library/context";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { deleteDoc, doc, getDocs } from "firebase/firestore";
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 
-export default function Feed({ posts, admin }) {
-    return posts ? posts.map((post) => <PostItem post = {post} key = {post?.slug} admin = {admin} />) : null;
+export default function Feed({ posts, admin, userPage }) {
+    return posts ? posts.map((post) => <PostItem post = {post} key = {post?.slug} admin = {admin} userPage = {userPage}/>) : null;
 }
 
-function DeletePostButton({ postRef }) {
-    //const router = useRouter();
-
-    const deletePost = async () => {
-        const doIt = confirm('are you sure!');
-        if (doIt) {
-        await deleteDoc(postRef);
-        toast('post annihilated ', { icon: '🗑️' });
-        }
-        //router.reload()
-    };
-
-    return (
-        <button onClick={deletePost}>
-        Delete
-        </button>
-    );
-}
-
-function PostItem({ post, admin = false }) {
+function PostItem({ post, admin = false, userPage = false}) {
     const postRef = doc(firestore, "users", post?.uid, "posts", post?.slug);
     const lastUser = doc(firestore, "users", post?.uid)
     const lastUserDoc = useDocumentData(lastUser);
+    const [isntDeleted, setIsntDeleted] = useState(true)
 
     const { user, username } = useContext(UserContext);
+
+    function DeletePostButton() {
+        //const router = useRouter();
+    
+        const deletePost = async () => {
+            const doIt = confirm('are you sure!');
+            if (doIt) {
+                await deleteDoc(postRef);
+                toast('post annihilated ', { icon: '🗑️' });
+                setIsntDeleted(false)
+            }
+            //router.reload()
+        };
+    
+        return (
+            <button onClick={deletePost}>
+                Delete
+            </button>
+        );
+    }
 
     return (
         <div className = "wholeFeed">
@@ -57,7 +59,7 @@ function PostItem({ post, admin = false }) {
                 </ Link>
             </div>
 
-            {(post?.published) && (<Link href={`/${post?.username}/${post?.slug}`}>
+            {(post?.published) && (isntDeleted) && (<Link href={`/${post?.username}/${post?.slug}`}>
                 <div className = "feedLink"></div>
             </Link>)}
 
@@ -78,7 +80,7 @@ function PostItem({ post, admin = false }) {
                     <span>💕 {post.heartCount} Likes</span>
                 </footer>*/}
 
-                {(user == post?.uid) && (
+                {(user?.uid === post?.uid) && (isntDeleted) && (
                     <div className = "adminFeed">
                         {admin && ((post?.published) ? <p style = {{color: "green"}}>Live</p> : <p style = {{color: "red"}}>Unpublished</p>)}
                         <Link href={`/admin/${post?.slug}`}>
@@ -86,7 +88,12 @@ function PostItem({ post, admin = false }) {
                                 <button>Edit</button>
                             </h3>
                         </Link>
-                        <DeletePostButton postRef = {postRef} />
+                        {(!userPage) && (<DeletePostButton />)}
+                    </div>
+                )}
+                {(user?.uid === post?.uid) && (!isntDeleted) && (
+                    <div className = "adminFeed">
+                        <button disabled>Post Deleted</button>
                     </div>
                 )}
             </div>

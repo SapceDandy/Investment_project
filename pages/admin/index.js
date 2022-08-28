@@ -33,7 +33,7 @@ function PostList() {
   return (
     <>
       <div className = "wrapper">
-          <h1 style={{position: "fixed", top: "3rem", zIndex: 3, background: "lightgrey", width: "100%", textAlign: "center", paddingTop: "1rem", paddingBottom: "1rem"}}>Manage your Posts</h1>
+          <h1 style={{position: "fixed", top: "3rem", zIndex: 3, background: "rgb(222, 222, 222)", width: "100%", textAlign: "center", paddingTop: "1rem", paddingBottom: "1rem"}}>Manage your Posts</h1>
         <div style = {{marginTop: "5rem"}}>
           <Feed posts = {posts} admin/>
         </div>

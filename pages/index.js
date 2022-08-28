@@ -91,7 +91,6 @@ export default function Home({uploadPosts}) {
 
     track = track.filter((docs) => docs != null);
 
-    console.log("Track: ", track)
     setFeedBottom(false)
     setPosts(track);
   }
@@ -189,7 +188,6 @@ export default function Home({uploadPosts}) {
             </div>
           </div>
             <main className = "pageIndexAlign">
-              {console.log(posts)}
               <Feed posts = {posts} />
 
               <div>

@@ -19,6 +19,11 @@ a {
   /*cursor: none;*/
 }
 
+* button {
+  pointer-events: all;
+  cursor: pointer;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
@@ -90,7 +95,6 @@ a {
   background-color: black;
   border: none;
   border-radius: 5px;
-  cursor: none;
   transition: all .1s ease-in-out ;
 }
 
@@ -184,6 +188,30 @@ a {
   border-radius: calc(20vw + 130px);
   width: 10vw;
 }
+
+.userProfileButtons {
+  display: flex;
+  flex-direction: row;
+  width: 60vw;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.userProfileButtons button {
+  height: 5vh;
+  width: 10vw;
+  border-radius: 20px;
+  border: transparent;
+  background-color: black;
+  color: white;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, .3);
+  transition: all .2s ease-in-out ;
+}
+
+.userProfileButtons button:hover {
+  background-color: dimgray;
+  transition: all .2s ease-in-out ;
+}
 /*END OF PROFILE PAGE*/
 
 /*MAINLINKS START*/
@@ -193,7 +221,7 @@ a {
 }
 
 .mainLinks {
-  width: 60%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -277,17 +305,13 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   height: 3.5vh;
   outline: none;
   border: none;
-  pointer-events: all;
-  cursor: pointer;
 }
 
 .exitSearch {
   display: flex;
   right: 0;
   position: fixed;
-  cursor: pointer;
   margin-right: 3rem;
-  pointer-events: all;
   height: 5vh;
   width: 5vw;
   border-radius: 20px;
@@ -319,7 +343,6 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 }
 
 .wholeFeed {
-  pointer-events: all;
   background-color: white;
   width: 60vw;
   display: flex;
@@ -343,6 +366,57 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   column-gap: 2rem;
   transform: translateY(-2rem);
   z-index: 2;
+}
+
+.wholeFeedFollowFeed {
+  background-color: white;
+  width: 60vw;
+  height: min-content;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0;
+  border-radius: 20px;
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, .3);
+}
+
+.topOfFeedCardFollowFeed {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: row;
+  padding: 0 2rem;
+  column-gap: 2rem;
+  z-index: 2;
+}
+
+.unFollowButtonWrapper {
+  display: flex;
+  width: 100%;
+  justify-content: right;
+}
+
+.unFollowButtonWrapper button { 
+  background-color: black;
+  color: white;
+  border-radius: 10px;
+  border-style: none;
+  padding: .5rem 1.5rem;
+  transition: all .2s ease-in-out;
+}
+
+.unFollowButtonWrapper button:hover { 
+  background-color: dimgray;
+  transition: all .2s ease-in-out;
+}
+
+.topOfFeedCardFollowFeed button:disabled {
+  background-color: #f1f1f1;
+  color: grey;
+  pointer-events: none;
 }
 
 .feedCardTitle {
@@ -408,14 +482,18 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   border-radius: 10px;
   border-style: none;
   padding: .5rem 1.5rem;
-  pointer-events: all;
-  cursor: pointer;
   transition: all .2s ease-in-out;
 }
 
 .adminFeed button:hover { 
   background-color: dimgray;
   transition: all .2s ease-in-out;
+}
+
+.adminFeed button:disabled {
+  background: lightgray;
+  color: grey;
+  pointer-events: none;
 }
 
 .adminFeedHit {
@@ -433,8 +511,6 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   color: white;
   border-radius: 10px;
   border-style: none;
-  pointer-events: all;
-  cursor: pointer;
   transition: all .2s ease-in-out;
 }
 
@@ -510,7 +586,7 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   justify-content: center;
   top: 9rem;
   z-Index: 4; 
-  background: lightgrey;
+  background: rgb(222, 222, 222);
   width: 100%;
   padding-bottom: 1rem;
 }
@@ -525,9 +601,21 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 
 .createNewPostWrapper button {
   padding: .5rem;
-  width: 5vw;
+  background: black;
+  color: white;
   border-radius: 0px 20px 20px 0px;
   border-style: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.createNewPostWrapper button:hover {
+  background: dimgray;
+}
+
+.createNewPostWrapper button:disabled {
+  background: lightgray;
+  color: grey;
 }
 /*END SINGLE POST*/
 
@@ -702,6 +790,73 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   margin-bottom: 2rem;
   border-radius: 10px;
 }
+
+.createNewResponseWrapper {
+  display: flex;
+  width: 100%;
+}
+
+.createNewResponseWrapper input {
+  display: flex;
+  width: 100%;
+  height: 5vh;
+  outline: none;
+  border: solid;
+  border-color: #f1f1f1;
+  border-radius: 20px 0px 0px 20px;
+  padding: .5rem;
+}
+
+.createNewResponseWrapper button {
+  display: flex;
+  background: black;
+  color: white;
+  padding: .5rem;
+  width: 5vw;
+  height: 5vh;
+  border-radius: 0px 20px 20px 0px;
+  align-items: center;
+  justify-content: center;
+  border-style: none;
+  transition: all .2s ease-in-out;
+}
+
+.createNewResponseWrapper button:hover {
+  background: dimgrey;
+  transition: all .2s ease-in-out;
+}
+
+.createNewResponseWrapper button:disabled {
+  color: rgba(71, 71, 71, 0.496);
+  background: #f1f1f1;
+  transition: all .2s ease-in-out;
+}
+
+.postContentBottomRight {
+  display: flex;
+  width: 100%;
+  justify-content: right;
+  margin-bottom: .5rem;
+}
+
+.generalButtonBottomRight {
+  display: flex;
+  position: relative;
+  justify-content: left;
+  background-color: black;
+  color: white;
+  border-radius: 10px;
+  border-style: none;
+  padding: .5rem 1.5rem;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+}
+
+.generalButtonBottomRight:hover {
+  color: white;
+  background-color: dimgray;
+  transition: all .2s ease-in-out;
+}
 /*END POST CONTENT*/
 
 /*COMMENT SECTION*/
@@ -766,8 +921,6 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 }
 
 .commentUsername {
-  cursor: pointer;
-  pointer-events: all;
 }
 
 .createNewCommentWrapper {
@@ -780,6 +933,7 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 .createNewCommentWrapper input {
   padding: .5rem;
   width: 30vw;
+  height: 5vh;
   border-radius: 20px 0px 0px 20px;
   outline: none;
   border-style: solid;
@@ -797,8 +951,6 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   align-items: center;
   justify-content: center;
   border-style: none;
-  cursor: pointer;
-  pointer-events: all;
   transition: all .2s ease-in-out;
 }
 
@@ -908,8 +1060,6 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   align-items: center;
   justify-content: center;
   border-style: none;
-  cursor: pointer;
-  pointer-events: all;
   transition: all .2s ease-in-out;
 }
 
@@ -954,8 +1104,6 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   border-radius: 20px;
   padding: .5rem 1rem;
   transition: all .2s ease-in-out;
-  pointer-events: all;
-  cursor: pointer;
 }
 
 .signUpForm button:hover {
@@ -1022,8 +1170,6 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   align-items: center;
   padding: .5rem;
   column-gap: .5rem;
-  pointer-events: all;
-  cursor: pointer;
 }
 
 .formWrapper {
@@ -1047,3 +1193,62 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   margin-top: .5rem;
 }
 /*END SIGNUP*/
+
+/*SEND MESSAGE*/
+.messageWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 60vw;
+  background: white;
+  border-radius: 20px;
+  justify-content: center;
+  padding: 2rem;
+  margin: 2rem;
+}
+.messageWrapper div {
+  display: flex;
+  flex-direction: column;
+}
+
+.messageWrapper label {
+  margin-bottom: .5rem;
+}
+
+.messageWrapper input {
+  display: flex;
+  height: max-content;
+  outline: none;
+  border: solid;
+  border-color: lightgray;
+  padding: .5rem;
+  border-radius: 20px;
+  margin-bottom: 2rem;
+}
+
+.messageWrapper .send {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.messageWrapper button { 
+  background-color: black;
+  color: white;
+  border-radius: 10px;
+  border-style: none;
+  padding: .5rem 1.5rem;
+  transition: all .2s ease-in-out;
+}
+
+.messageWrapper button:hover { 
+  background-color: dimgray;
+  transition: all .2s ease-in-out;
+}
+
+.messageWrapper button:disabled {
+  background-color: #f1f1f1;
+  color: grey;
+  pointer-events: none;
+}
+/*END SEND MESSAGE*/

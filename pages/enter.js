@@ -10,16 +10,13 @@ import Link from "next/link";
 
 
 export default function EnterPage(props) {
-    const { user, username } = useContext(UserContext);
+    const { user, loading, username } = useContext(UserContext);
 
     return(
       <main>
-          {(!user) ? 
-          <SignInButton /> :
-          (!username) ?
-          < UsernameForm />: 
-          <Redirect to = "/" />
-          }
+          {(!user) && ((!loading) ? <SignInButton /> : null)}
+          {(user && !username) && (<UsernameForm username = {username}/>)} 
+          {(user && username) && (<Redirect to = "/" />)}
       </main>
     )
 }
@@ -169,18 +166,10 @@ function SignInButton() {
   );
 }
 
-/*function SignOutButton() {
-    return (
-      <button style = {{background: "transparent", borderColor: "transparent"}} onClick = {() => signOut(auth)}/>
-    )
-}*/
-
-function UsernameForm() {
+function UsernameForm({username}) {
   const [formValue, setFormValue] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const { user, username } = useContext(UserContext);
 
   const onSubmit = async (e) => {
     e.preventDefault();
