@@ -38,7 +38,7 @@ function PostItem({ post, admin = false }) {
         <div className = "wholeFeed">
             <div className = "topOfFeedCard">
                 <a className = "feedCardTitle">
-                    <h2>{userId?.displayName}</h2>
+                    <h2>{(!userId?.displayName) ? userId?.username : userId?.displayName}</h2>
                 </a>
                 <Link href = {`/${userId?.username}`}> 
                     <div className = "userInfo">
@@ -49,7 +49,7 @@ function PostItem({ post, admin = false }) {
                     </div>
                 </ Link>
             </div>
-            <Link href = {`/${username}/${messageWith}`}>
+            <Link href = {`/messages/${messageWith}`}>
                 <div className = "wholeFeedLink"></div>
             </Link>
             <div className = "messageGroup above">

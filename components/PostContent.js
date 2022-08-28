@@ -59,12 +59,14 @@ export default function PostContent({ post }) {
               </Link>{' '}
             </div>
             <div>
-              {`${monthString} ${day}, ${year} @ ${hours}:${minutes} ${amOrPM}`}
+              {`${monthString} ${day}, ${year} @${hours}:${minutes} ${amOrPM}`}
             </div>
           </span>
         </div>
       </div>
+      <span style = {{fontStyle: "italic"}}>Header:</span>
       <div className = "postContentSpan"><ReactMarkdown>{post?.header}</ReactMarkdown></div>
+      <span style = {{fontStyle: "italic"}}>Content:</span>
       <div className = "postContentSpan"><ReactMarkdown>{post?.content}</ReactMarkdown></div>
       {currentUser !== post.uid && (
       <form className="createNewResponseWrapper">

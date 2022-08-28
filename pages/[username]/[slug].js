@@ -3,18 +3,17 @@ import AuthCheck from "../../components/AuthCheck";
 import HeartButton from "../../components/HeartButton";
 import { serverTimestamp, docs, doc, getDocs, getDoc, collection, query, limit, getFirestore, collectionGroup, setDoc, orderBy, where, addDoc } from 'firebase/firestore';
 import PostContent from "../../components/PostContent";
-
 import CommentList from "../../components/CommentList";
 import { UserContext } from "../../library/context";
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 import uniqid from 'uniqid';
-
 import Link from 'next/link';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { useContext, useState } from 'react';
 
 export async function getStaticProps({ params }) {
+    console.log("Params: ", params)
     const { username, slug } = params;
     const userDoc = await getUser(username);
 

@@ -31,7 +31,7 @@ function DeleteCommentButton({ commentRef }) {
 
 function Comment({ comments }) {
     const commentRef = doc(firestore, "users", comments?.uid, "posts", comments?.slug, "comments", comments?.commentId);
-    const { user } = useContext(UserContext);
+    const { user, username } = useContext(UserContext);
     const [userReplied, setUserReplied] = useState(false);
     const [showSubs, setShowSubs] = useState(false);
 
@@ -52,8 +52,8 @@ function Comment({ comments }) {
         <>
             <div className = "wholeFeedComments">
                 <div className = "topLevelOfComment">
-                    <span className = "spanLeft">{comments.comment}</span>
-                    <Link href = {`/${comments.username}`}>
+                    <span className = "spanLeft">{comments?.comment}</span>
+                    <Link href = {`/${comments?.username}`}>
                         <span className = "commentUsername spanRight">@{comments.username}</span>
                     </Link>
                 </div>
@@ -70,7 +70,7 @@ function Comment({ comments }) {
                         <div className = "adminFeed spanRight">
                             <button style = {{background: (showSubs) ? "dimgrey" : null}} onClick = {() => (showSubs) ? setShowSubs(false) : setShowSubs(true)}>Comments {/*(counter !== 0) ? `${counter}` : null*/}</button>
                             <button style = {{background: (userReplied) ? "dimgrey" : null}} onClick = {() => (userReplied) ? setUserReplied(false) : setUserReplied(true)}>Reply</button>
-                            {(user === comments?.uid) && (
+                            {(username === comments?.username) && (
                                 <DeleteCommentButton commentRef = {commentRef} />
                             )}
                         </div>

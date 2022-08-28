@@ -1,10 +1,8 @@
 import AuthCheck from '../../components/AuthCheck';
 import { firestore, auth } from '../../library/firebase';
 import { serverTimestamp, doc, setDoc, deleteDoc, updateDoc } from 'firebase/firestore';
-
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { useForm } from 'react-hook-form';
 import ReactMarkdown from 'react-markdown';
@@ -22,7 +20,7 @@ export default function AdminPostEdit(props) {
 }
 
 function PostManager() {
-  const [preview, setPreview] = useState(false);
+  //const [preview, setPreview] = useState(false);
 
   const router = useRouter();
   const { slug } = router.query;
@@ -39,7 +37,7 @@ function PostManager() {
             <div className = "formWrapper">
               <section>
                 <h1 className="formTitle" >{post.title}</h1>
-                <PostForm postRef = {postRef} defaultValues = {post} preview = {preview} />
+                <PostForm postRef = {postRef} defaultValues = {post} /*preview = {preview}*/ />
               </section>
             </div>
 
