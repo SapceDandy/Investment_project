@@ -6,10 +6,11 @@ import { useContext, useState } from "react";
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { useRouter } from 'next/router';
 import { getUser, postToJSON, firestore } from "../../library/firebase";
-import { query, collection, where, getDocs, limit, orderBy, getFirestore, doc, setDoc, deleteDoc, collectionGroup} from "firebase/firestore";
+import { query, collection, where, getDocs, limit, orderBy, getFirestore, doc, setDoc, deleteDoc, collectionGroup, serverTimestamp } from "firebase/firestore";
 import { useEffect } from "react";
 import CurrentFeed from "../../components/CurrentFeed";
 import FollowFeed from "../../components/FollowFeed";
+import MessageList from "../../components/Messages";
 import toast from 'react-hot-toast';
 
 export async function getServerSideProps({ query: urlQuery }) {
@@ -46,7 +47,7 @@ export default function UserPage({user, posts}) {
     const { username, user: currentUser } = useContext(UserContext);
     const [currentlyPressed, setCurrentlyPressed] = useState("Posts");
     const [currentPost, setCurrentPost] = useState(posts);
-    const [sendMessage, setSendMessage] = useState(false)
+    const [sendMessage, setSendMessage] = useState(false);
 
     let following = null;
     let getFollow = null;
@@ -113,48 +114,18 @@ export default function UserPage({user, posts}) {
         setCurrentPost(following);
     }
 
-    async function Messages() {
+    async function MyMessages() {
+        console.log("Username: ", username)
+        const ref = collection(firestore, "MessageGroup", username, "With");
+        const refQuery = query(ref);
+        
+        const currentMessage = (await getDocs(refQuery)).docs?.map((doc) => doc?.data());
 
-    }
-
-    function Message() {
-        const [title, setTitle] = useState("");
-        const [message, setMessage] = useState("");
-
-        const messageSent = async() => {
-            const refSent = doc(firestore, "MessageSent", username, "SentTo", user?.username, "Message", title);
-            const refRecieved = doc(firestore, "MessageRecieved", user?.username, "SentBy", username, "Message", title);
-
-            const data = {
-                title: title,
-                message: message,
-                sentBy: username,
-                sentTo: user?.username,
-                createdAt: serverTimestamp()
-            }
-
-            await setDoc(refSent, data);
-            await setDoc(refRecieved, data);
-
-            toast.success(`You have sent @${user?.username} a message!`);
-            setSendMessage(false)
-        }
-
-        return (
-            <form className = "messageWrapper">
-                <div>
-                    <label for = "title">Title</label>
-                    <input placeholder = "Add a title..." type = "text" id = "title" name = "title" value = {title} onChange = {(e) => setTitle(e.target.value)} />
-                </div>
-                <div>
-                    <label for = "message">Message</label>
-                    <input placeholder = "Add a title..." type = "text" id = "message" name = "message" value = {message} onChange = {(e) => setMessage(e.target.value)} />
-                </div>
-                <div className = "send">
-                    <button type = "button" onClick = {() => messageSent()} disabled = {message === ""}>Send</button>
-                </div>
-            </form>
-        )
+        //console.log("Username: ", username)
+        console.log("Message: ", currentMessage)
+        console.log("Ref: ", ref)
+        setCurrentlyPressed("MyMessages");
+        setCurrentPost(currentMessage);
     }
 
     return (
@@ -166,28 +137,105 @@ export default function UserPage({user, posts}) {
                     <button type = "button" style = {{background: (currentlyPressed === "Posts") ? "dimgrey" : null}} onClick = {() => setCurrentlyPressed("Posts")}>My Posts</button>
                     <button type = "button" style = {{background: (currentlyPressed === "Following") ? "dimgrey" : null}} onClick = {() => Following()}>Following</button>
                     <button type = "button" style = {{background: (currentlyPressed === "Tracking") ? "dimgrey" : null}} onClick = {() =>  Tracking()}>Tracking</button>
-                    <button type = "button" style = {{background: (currentlyPressed === "Tracking") ? "dimgrey" : null}} onClick = {() =>  Messages()}>Messages</button>
+                    <button type = "button" style = {{background: (currentlyPressed === "MyMessages") ? "dimgrey" : null}} onClick = {() =>  MyMessages()}>Messages</button>
                 </div>)}
-                {(username !== user.username) && (
+                {(username !== user?.username) && (
                     <div className = "userProfileButtons">
                         {(following?.username !== user?.username) && (<button type = "button" onClick = {() => Follow()}>Follow</button>)}
                         {(following?.username === user?.username) && (<button type = "button" onClick = {() => UnFollow()}>Unfollow</button>)}
-                        <button type = "button" onClick = {() => setSendMessage(!sendMessage)}>Send Message</button>
+                        <button type = "button" style = {{background: (sendMessage) ? "dimgrey" : null}}onClick = {() => setSendMessage(!sendMessage)}>Send Message</button>
                     </div>
                 )}
+                {console.log("Current Message: ", currentPost)}
                 {(username === user?.username) && (  
                     (currentlyPressed === "Posts") ? <Feed posts = {posts} userPage/> :
                     (currentlyPressed === "Following") ? <FollowFeed currentPost = {currentPost} /> :
-                    <CurrentFeed currentPost = {currentPost}/>
+                    (currentlyPressed === "Tracking") ? <CurrentFeed currentPost = {currentPost}/> :
+                    <MessageList currentPost = {currentPost}/>
                 )}
                 {(username !== user?.username) && (!sendMessage) && (
                     <Feed posts = {posts}/>
                 )}
                 {(username !== user?.username) && (sendMessage) && (
-                    <Message />
+                    <Message user = {user} username = {username} currentUser = {currentUser}/>
                 )}
             </AuthCheck>
         </main>
+    )
+}
+
+function Message({user, username, currentUser}) {
+    console.log("Current: ", user)
+    const [theTitle, setTheTitle] = useState("");
+    const [theMessage, setTheMessage] = useState("");
+
+    const messageSent = async() => {
+        const ref = collectionGroup(firestore, "users");
+        const queryRef = query(ref, where("username", "==", user?.username));
+
+        const newDoc = (await getDocs(queryRef)).docs.map((docs) => docs.data());
+
+        console.log("New Doc: ", newDoc)
+
+        const firstPerson = doc(firestore, "MessageGroup", username, "With", user?.username);
+        const secondPerson = doc(firestore, "MessageGroup", user?.username, "With", username);
+
+        const firstPersonData = {
+            writtenBy: username,
+            messageWith: username,
+            username: user?.username,
+            uid: newDoc[0]?.uid,
+            title: theTitle,
+            message: theMessage,
+            createdAt: serverTimestamp()
+        }
+
+        const secondPersonData = {
+            writtenBy: username,
+            messageWith: user?.username,
+            username: username,
+            uid: currentUser?.uid,
+            title: theTitle,
+            message: theMessage,
+            createdAt: serverTimestamp()
+        }
+
+        await setDoc(firstPerson, firstPersonData);
+        await setDoc(secondPerson, secondPersonData);
+
+        const refOne = doc(firestore, "MessageGroup", username, "With", user?.username, "Messages", theTitle);
+        const refTwo = doc(firestore, "MessageGroup", user?.username, "With", username, "Messages", theTitle);
+
+        const data = {
+            title: theTitle,
+            message: theMessage,
+            sentBy: username,
+            sentTo: user?.username,
+            createdAt: serverTimestamp()
+        }
+
+        await setDoc(refOne, data);
+        await setDoc(refTwo, data);
+
+        toast.success(`You have sent @${user?.username} a message!`);
+        setTheTitle("");
+        setTheMessage("");
+    }
+
+    return (
+        <form className = "messageWrapper">
+            <div>
+                <label for = "title">Title</label>
+                <input placeholder = "Add a title..." type = "text" id = "title" name = "title" value = {theTitle} onChange = {(e) => setTheTitle(e.target.value)} />
+            </div>
+            <div>
+                <label for = "message">Message</label>
+                <input placeholder = "Add a title..." type = "text" id = "message" name = "message" value = {theMessage} onChange = {(e) => setTheMessage(e.target.value)} />
+            </div>
+            <div className = "send">
+                <button type = "button" onClick = {() => messageSent()} disabled = {theMessage === ""}>Send</button>
+            </div>
+        </form>
     )
 }
 

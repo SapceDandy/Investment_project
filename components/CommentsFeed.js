@@ -58,7 +58,6 @@ function Comment({ comments }) {
                     </Link>
                 </div>
 
-
                 <div className = "bottomLevelOfComment">
                     <span className = "spanLeft">{`${monthString} ${day}, ${year} @ ${hours}:${minutes} ${amOrPM}`}</span>
                     {/*<footer>
@@ -67,7 +66,6 @@ function Comment({ comments }) {
                         </span>
                         <span>💕 {post.heartCount} Likes</span>
                     </footer>*/}
-
                     
                         <div className = "adminFeed spanRight">
                             <button style = {{background: (showSubs) ? "dimgrey" : null}} onClick = {() => (showSubs) ? setShowSubs(false) : setShowSubs(true)}>Comments {/*(counter !== 0) ? `${counter}` : null*/}</button>

@@ -166,19 +166,21 @@ function SignInButton() {
   );
 }
 
-function UsernameForm({username}) {
+function UsernameForm() {
   const [formValue, setFormValue] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const { user, username } = useContext(UserContext);
+
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    const userDoc = doc(getFirestore(), 'users', user.uid);
+    const userDoc = doc(getFirestore(), 'users', user?.uid);
     const usernameDoc = doc(getFirestore(), 'usernames', formValue);
 
     const batch = writeBatch(getFirestore());
-    batch.set(userDoc, { username: formValue, photoURL: user.photoURL, displayName: user.displayName });
+    batch.set(userDoc, { username: formValue, photoURL: user?.photoURL, displayName: user?.displayName, uid: user.uid });
     batch.set(usernameDoc, { uid: user.uid });
 
     await batch.commit();
