@@ -1314,7 +1314,7 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   width: 100%;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10rem;
+  margin-bottom: 8rem;
 }
 
 .messageFeedWrapper {
@@ -1323,6 +1323,24 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.messageFeedWrapper button { 
+  display: flex;
+  width: 6rem;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  color: white;
+  border-radius: 20px;
+  border-style: none;
+  padding: .5rem 1.5rem;
+  transition: all .2s ease-in-out;
+}
+
+.messageFeedWrapper button:hover { 
+  background-color: dimgray;
+  transition: all .2s ease-in-out;
 }
 
 .messageFeedLeft {
@@ -1387,7 +1405,14 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   justify-content: center;
 }
 
+.linkedMessageWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+}
+
 .linkedMessage {
+  width: min-content;
   pointer-events: all;
   cursor: pointer;
 }
@@ -1405,6 +1430,8 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 
 .createMessageForm {
   display: flex;
+  
+  width: 100%;
   flex-direction: column;
   padding: 1rem;
   row-gap: .5rem;
@@ -1414,6 +1441,7 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 
 .createMessegeContent {
   display: flex;
+  width: 100%;
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -1421,14 +1449,14 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 
 .createMessageTitle {
   display: flex;
-  width: 40vw;
+  width: 35%;
   flex-direction: column;
   margin: .5rem;
 }
 
 .createMessageMessage {
   display: flex;
-  width: 40vw;
+  width: 35%;
   flex-direction: column;
   margin: .5rem;
 }
@@ -1467,4 +1495,36 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   color: grey;
   pointer-events: none;
 }
+
+.centerUserMessageBackButton {
+  display: flex;
+  position: fixed;
+  top: 100px;
+  left: 30px;
+  width: 6rem;
+  margin-bottom: 1rem;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  color: white;
+  border-radius: 20px;
+  border-style: none;
+  padding: .5rem 1.5rem;
+  margin: .5rem;
+  transition: all .2s ease-in-out;
+}
+
+.centerUserMessageBackButton:hover { 
+  background-color: dimgray;
+  transition: all .2s ease-in-out;
+}
 /*END MESSAGE USER*/
+
+/*MESSAGE PAGE*/
+.messagesPageWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+/*END MESSAGE PAGE*/

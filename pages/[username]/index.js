@@ -11,39 +11,10 @@ import { useEffect } from "react";
 import CurrentFeed from "../../components/CurrentFeed";
 import FollowFeed from "../../components/FollowFeed";
 import MessageList from "../../components/Messages";
+import uniqid from 'uniqid';
 import toast from 'react-hot-toast';
 
-export async function getServerSideProps({ query: urlQuery }) {
-    const { username } = urlQuery;
-
-    const userDoc = await getUser(username); 
-
-    if (!userDoc) {
-        return {
-            notFound: true,
-        };
-    }
-
-    let user = null;
-    let posts = null;
-
-    if (userDoc) {
-        user = userDoc.data();
-
-        const postsQuery = query(
-            collection(firestore, userDoc.ref.path, 'posts'),
-            where('published', '==', true),
-            orderBy('createdAt', 'desc')
-          );
-        posts = (await getDocs(postsQuery)).docs.map(postToJSON);
-    }
-
-    return {
-        props: { user, posts },
-    };
-}
-
-export default function UserPage({user, posts}) {
+export default function UserPage({ user, posts }) {
     const { username, user: currentUser } = useContext(UserContext);
     const [currentlyPressed, setCurrentlyPressed] = useState("Posts");
     const [currentPost, setCurrentPost] = useState(posts);
@@ -117,13 +88,13 @@ export default function UserPage({user, posts}) {
     async function MyMessages() {
         console.log("Username: ", username)
         const ref = collection(firestore, "MessageGroup", username, "With");
-        const refQuery = query(ref);
+        const refQuery = query(ref, orderBy("createAt", "desc"));
         
         const currentMessage = (await getDocs(refQuery)).docs?.map((doc) => doc?.data());
 
         //console.log("Username: ", username)
-        console.log("Message: ", currentMessage)
-        console.log("Ref: ", ref)
+        //console.log("Message: ", currentMessage)
+        //console.log("Ref: ", ref)
         setCurrentlyPressed("MyMessages");
         setCurrentPost(currentMessage);
     }
@@ -165,17 +136,16 @@ export default function UserPage({user, posts}) {
 }
 
 function Message({user, username, currentUser}) {
-    console.log("Current: ", user)
     const [theTitle, setTheTitle] = useState("");
     const [theMessage, setTheMessage] = useState("");
 
     const messageSent = async() => {
+        const noTitle = uniqid();
+        theTitle = (theTitle === "") ? noTitle : theTitle;
         const ref = collectionGroup(firestore, "users");
         const queryRef = query(ref, where("username", "==", user?.username));
 
         const newDoc = (await getDocs(queryRef)).docs.map((docs) => docs.data());
-
-        console.log("New Doc: ", newDoc)
 
         const firstPerson = doc(firestore, "MessageGroup", username, "With", user?.username);
         const secondPerson = doc(firestore, "MessageGroup", user?.username, "With", username);
@@ -185,7 +155,7 @@ function Message({user, username, currentUser}) {
             messageWith: username,
             username: user?.username,
             uid: newDoc[0]?.uid,
-            title: theTitle,
+            title: (theTitle === noTitle) ? null : theTitle,
             message: theMessage,
             createdAt: serverTimestamp()
         }
@@ -195,7 +165,7 @@ function Message({user, username, currentUser}) {
             messageWith: user?.username,
             username: username,
             uid: currentUser?.uid,
-            title: theTitle,
+            title: (theTitle === noTitle) ? null : theTitle,
             message: theMessage,
             createdAt: serverTimestamp()
         }
@@ -207,7 +177,7 @@ function Message({user, username, currentUser}) {
         const refTwo = doc(firestore, "MessageGroup", user?.username, "With", username, "Messages", theTitle);
 
         const data = {
-            title: theTitle,
+            title: (theTitle === noTitle) ? null : theTitle,
             message: theMessage,
             sentBy: username,
             sentTo: user?.username,
