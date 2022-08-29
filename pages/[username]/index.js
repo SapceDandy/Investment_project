@@ -228,12 +228,18 @@ function Message({user, username, currentUser}) {
                 <label for = "title">Title</label>
                 <input placeholder = "Add a title..." type = "text" id = "title" name = "title" value = {theTitle} onChange = {(e) => setTheTitle(e.target.value)} />
             </div>
+            
+            <div style = {{ marginBottom: "1rem", width: "100%", textAlign: "center" }}>
+                <span style = {{fontStyle: "italic"}}>Title can't be longer than 35 characters</span>
+                {(theTitle.length > 35) && (<span style = {{color: "red"}}>You have exceeded the title character limit</span>)}
+            </div>
+
             <div>
-                <label for = "message">Message</label>
-                <input placeholder = "Add a title..." type = "text" id = "message" name = "message" value = {theMessage} onChange = {(e) => setTheMessage(e.target.value)} />
+                <label for = "message">Message <span style = {{color: "red"}}>*</span></label>
+                <input placeholder = "Write message..." type = "text" id = "message" name = "message" value = {theMessage} onChange = {(e) => setTheMessage(e.target.value)} />
             </div>
             <div className = "send">
-                <button type = "button" onClick = {() => messageSent()} disabled = {theMessage === ""}>Send</button>
+                <button type = "button" onClick = {() => messageSent()} disabled = {(theMessage === "") || (theTitle.length > 35)}>Send</button>
             </div>
         </form>
     )

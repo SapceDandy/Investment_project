@@ -91,24 +91,24 @@ function SignInButton() {
         <form className = "signUpForm">
           <h3>SignUp</h3>
           <div className = "signUpInfo">
-            <label for = "email">Email</label>
+            <label for = "email">Email<span style ={{color: "red"}}>*</span></label>
             <input type = "text" id = "email" name = "Email" value = {email} onChange = {(e) => setEmail(e.target.value)}/>
           </div>
           {(email !== "") && !(regexEmail.test(email)) && (<span style = {{color: "red"}}>You must enter a valid email</span>)}
 
           <div className = "fullName">
             <div>
-              <label for = "firstName">First Name</label>
+              <label for = "firstName">First Name<span style ={{color: "red"}}>*</span></label>
               <input type = "text" id = "firstName" name = "firstName" value = {firstName} onChange = {(e) => setFirstName(e.target.value)} />
             </div>
             <div>
-              <label for = "lastName">Last Name</label>
+              <label for = "lastName">Last Name<span style ={{color: "red"}}>*</span></label>
               <input type = "text" id = "lastName" name = "lastName" value = {lastName} onChange = {(e) => setLastName(e.target.value)} />
             </div>
           </div>
           
           <div className = "signUpInfo">
-            <label for = "password">Password</label>
+            <label for = "password">Password<span style ={{color: "red"}}>*</span></label>
             <div className = "passwordAndSee">
               <input type = {(seePassword) ? "text" : "password"} id = "password" name = "password" value = {password} onChange = {(e) => setPassword(e.target.value)} />
               <button type = "button" style = {{background: (seePassword) ? "dimgrey" : null}} onClick={() => setSeePassword(!seePassword)} disabled = {(password === "")}>See</button>
@@ -120,7 +120,7 @@ function SignInButton() {
           {!(regexPassword.test(password)) && (password !== "") && (<span style = {{color: "red"}}>Your password must meet the requirements shown above</span>)}
 
           <div className = "signUpInfo">
-            <label for = "passwordCheck">Password Check</label>
+            <label for = "passwordCheck">Password Check<span style ={{color: "red"}}>*</span></label>
             <div className = "passwordAndSee">
               <input type = {(seePasswordCheck) ? "text" : "password"} id = "passwordCheck" name = "passwordCheck" value = {passwordCheck} onChange = {(e) => setPasswordCheck(e.target.value)} />
               <button type = "button" style = {{background: (seePasswordCheck) ? "dimgrey" : null}} onClick={() => setSeePasswordCheck(!seePasswordCheck)} disabled = {(passwordCheck === "")}>See</button>

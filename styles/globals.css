@@ -1254,7 +1254,6 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 /*END SEND MESSAGE*/
 
 /*MESSAGES*/
-
 .messageGroup {
   display: flex;
   flex-direction: row;
@@ -1269,7 +1268,7 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 }
 
 .above .left {
-  font-weight: bold;
+  font-style: italic;
 }
 
 .bellow .left{
@@ -1299,14 +1298,23 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   pointer-events: all;
   cursor: pointer;
 }
+
+.wholeFeed .useInfoMessage {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  column-gap: .5rem;
+  cursor: pointer;
+}
 /*END MESSAGES*/
 
 /*MESSAGE USER*/
 .userMessageWrapper {
   display: flex;
-  width: 100vw;
+  width: 100%;
   align-items: center;
   justify-content: center;
+  margin-bottom: 10rem;
 }
 
 .messageFeedWrapper {
@@ -1324,6 +1332,7 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   flex-direction: row;
   align-items: center;
   justify-content: left;
+  margin-bottom: 2rem;
 }
 
 .messageFeedRight{
@@ -1333,6 +1342,7 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   flex-direction: row;
   align-items: center;
   justify-content: right;
+  margin-bottom: 2rem;
 }
 
 .timeLeft {
@@ -1359,10 +1369,102 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 
 .messageSpan {
   display: flex;
-  width: 40%;
-  background-color: red;
-  border-radius: 20px;
-  margin: 1rem;
+  width: 100%;
+  background-color: white;
+  border-radius: 10px;
+  margin: 1rem 0rem;
+  padding: .5rem 1rem;
+}
+
+.tempContainer div {
+  display: flex;
+  flex-direction: column;
+}
+
+.centerUserMessageText {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.linkedMessage {
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.createMessage {
+  display: flex;
+  position: fixed;
+  background-color: rgb(222, 222, 222);
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.createMessageForm {
+  display: flex;
+  flex-direction: column;
   padding: 1rem;
+  row-gap: .5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.createMessegeContent {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.createMessageTitle {
+  display: flex;
+  width: 40vw;
+  flex-direction: column;
+  margin: .5rem;
+}
+
+.createMessageMessage {
+  display: flex;
+  width: 40vw;
+  flex-direction: column;
+  margin: .5rem;
+}
+
+.createMessageForm input {
+  display: flex;
+  outline: none;
+  border: solid;
+  border-color: lightgray;
+  border-radius: 20px;
+  padding: .5rem 1rem;
+}
+
+.createMessageForm button { 
+  display: flex;
+  width: 6rem;
+  margin-bottom: 1rem;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  color: white;
+  border-radius: 20px;
+  border-style: none;
+  padding: .5rem 1.5rem;
+  margin: .5rem;
+  transition: all .2s ease-in-out;
+}
+
+.createMessageForm button:hover { 
+  background-color: dimgray;
+  transition: all .2s ease-in-out;
+}
+
+.createMessageForm button:disabled {
+  background-color: #f1f1f1;
+  color: grey;
+  pointer-events: none;
 }
 /*END MESSAGE USER*/

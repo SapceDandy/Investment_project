@@ -12,31 +12,45 @@ import toast from 'react-hot-toast';
 
 export default function User() {
     const { user: currentUser, username } = useContext(UserContext);
+    const [currentTitle, setCurrentTitle] = useState("");
+    const [currentMessage, setCurrentMessage] = useState("");
     const router = useRouter();
     const { user } = router.query;
     let message = null;
+    let queryRef = null;
 
     if (!(!username)) {
         const ref = collection(firestore, "MessageGroup", username, "With", user, "Messages");
-        const queryRef = query(ref, orderBy("createdAt", "desc"))
-        const [col] = useCollection(queryRef)
-
-        message = col?.docs?.map((docs) => docs?.data())
-
-        console.log("User Route: ", user);
-        console.log("Current User: ", currentUser);
-        console.log("Username: ", username);
+        queryRef = query(ref, orderBy("createdAt", "desc"));
     };
-
-    console.log("Messsage: ", message);
+    
+    const [col] = useCollection(!(!username) ? queryRef : null);
+    message = col?.docs?.map((docs) => docs?.data());
 
     return (
         <>
-            <h1>@{user}</h1>
+            <h1 className = "centerUserMessageText">@{user}</h1>
             <div className = "userMessageWrapper">
                 <div className = "messageFeedWrapper">
                     {!(!message) ? message.map((currentMessage) => <MessageFeed currentMessage = {currentMessage} />) : null}
                 </div>
+            </div>
+            <div className = "createMessage">
+                <form className = "createMessageForm">
+                    <div className = "createMessegeContent">
+                        <div className = "createMessageTitle">
+                            <input placeholder = "Title: 35 characters or less..."type = "text" id = "title" name = "title" value = {currentTitle} onChange = {(e) => setCurrentTitle(e.target.value)}/>
+                        </div>
+                        <div className = "createMessageMessage">
+                            <input placeholder = "Message: required..." type = "text" id = "title" name = "title" value = {currentMessage} onChange = {(e) => setCurrentMessage(e.target.value)}/>
+                        </div>
+                        <button type = "button" disabled = {(currentMessage === "") || (currentTitle.length > 35)}>Send</button>
+                    </div>
+                    <div>
+
+                        {(currentTitle.length > 35) && (<span style = {{color: "red"}}>You have exceeded the titel character limit</span>)}
+                    </div>
+                </form>
             </div>
         </>
     )
@@ -58,10 +72,18 @@ function MessageFeed({ currentMessage }) {
                 <span>{hours}:{minutes} {amOrPM}</span>
             </div>)}
             <div className = "tempContainer">
-                <div>
-                    <span>{currentMessage?.title}</span>
-                    <span>{currentMessage?.sentBy}</span>
-                </div>
+                {(username === currentMessage?.sentBy) && (<div style = {{textAlign: "right"}}>
+                    <Link href = {`/${currentMessage?.sentBy}`}>
+                        <span className = "linkedMessage" style = {{fontWeight: "bold"}}>@{currentMessage?.sentBy}</span>
+                    </Link>
+                    <span style = {{fontStyle: "italic"}}>{currentMessage?.title}</span>
+                </div>)}
+                {(username !== currentMessage?.sentBy) && (<div style = {{textAlign: "left"}}>
+                    <Link href = {`/${currentMessage?.sentBy}`}>
+                        <span className = "linkedMessage" style = {{fontWeight: "bold"}}>@{currentMessage?.sentBy}</span>
+                    </Link>
+                    <span style = {{fontStyle: "italic"}}>{currentMessage?.title}</span>
+                </div>)}
                 <span className = "messageSpan">{currentMessage?.message}</span>
             </div>
             {(username !== currentMessage?.sentBy) && (<div className = "timeRight">

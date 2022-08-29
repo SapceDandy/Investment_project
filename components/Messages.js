@@ -37,17 +37,19 @@ function PostItem({ post, admin = false }) {
     return (
         <div className = "wholeFeed">
             <div className = "topOfFeedCard">
-                <a className = "feedCardTitle">
-                    <h2>{(!userId?.displayName) ? userId?.username : userId?.displayName}</h2>
-                </a>
+                <Link href = {`/messages/${messageWith}`}>
+                    <a className = "feedCardTitle">
+                        <h2>{(!userId?.displayName) ? userId?.username : userId?.displayName}</h2>
+                    </a>
+                </Link>
                 <Link href = {`/${userId?.username}`}> 
-                    <div className = "userInfo">
+                    <div className = "useInfoMessage">
                         <img style = {{ width: "30px", height: "30px", borderRadius: "50px"}} src = {userId?.photoURL} />     
                         <a>
                             <strong>@{userId?.username}</strong>
                         </a>   
                     </div>
-                </ Link>
+                </Link>
             </div>
             <Link href = {`/messages/${messageWith}`}>
                 <div className = "wholeFeedLink"></div>
