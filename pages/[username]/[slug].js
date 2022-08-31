@@ -13,7 +13,6 @@ import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { useContext, useState } from 'react';
 
 export async function getStaticProps({ params }) {
-    console.log("Params: ", params)
     const { username, slug } = params;
     const userDoc = await getUser(username);
 
@@ -71,7 +70,6 @@ export default function Post(props) {
                     <section>
                         <PostContent post = {post} />
                     </section>
-
                     {/*<aside>
                         {currentUser?.uid === post?.uid && (
                         <Link href={`/admin/${post?.slug}`}>

@@ -28,20 +28,19 @@ export default function Home({uploadPosts}) {
   const { user, username } = useContext(UserContext);
   const [posts, setPosts] = useState(uploadPosts);
   const [loading, setLoading] = useState(false);
-
   const [feedBottom, setFeedBottom] = useState(false);
   const [currentBtn, setCurrentBtn] = useState("all");
-
   const [searching, setSearching] = useState(false)
 
   async function investor() {
     const ref = collectionGroup(firestore, "posts");
   
-    const postsQuery = query(ref, where("published", "==", true), where("status", "==", "investor"), orderBy("createdAt", "desc"), limit(numOfPosts))
+    const postsQuery = query(ref, where("published", "==", true), where("status", "==", "investor"), orderBy("createdAt", "desc"), limit(numOfPosts));
   
     const invest = (await getDocs(postsQuery)).docs.map(postToJSON);
 
-    setFeedBottom(false)
+    setFeedBottom(false);
+    setCurrentBtn("investor");
     setPosts(invest);
   }
 
@@ -52,7 +51,8 @@ export default function Home({uploadPosts}) {
   
     const seek = (await getDocs(postsQuery)).docs.map(postToJSON);
 
-    setFeedBottom(false)
+    setFeedBottom(false);
+    setCurrentBtn("investment");
     setPosts(seek);
   }
 
@@ -63,7 +63,8 @@ export default function Home({uploadPosts}) {
   
     const ment = (await getDocs(postsQuery)).docs.map(postToJSON);
 
-    setFeedBottom(false)
+    setFeedBottom(false);
+    setCurrentBtn("mentor");
     setPosts(ment);
   }
 
@@ -79,7 +80,7 @@ export default function Home({uploadPosts}) {
     })
 
     const newRef = collectionGroup(firestore, "posts")
-    const postsQuery = query(newRef, orderBy("updatedAt", "desc"), limit(numOfPosts))
+    const postsQuery = query(newRef, orderBy("updatedAt", "desc"))
 
     let track = (await getDocs(postsQuery)).docs?.map((docs) => {
       return (
@@ -91,7 +92,8 @@ export default function Home({uploadPosts}) {
 
     track = track.filter((docs) => docs != null);
 
-    setFeedBottom(false)
+    setFeedBottom(false);
+    setCurrentBtn("tracking");
     setPosts(track);
   }
 
@@ -100,10 +102,11 @@ export default function Home({uploadPosts}) {
   
     const postsQuery = query(ref, where("published", "==", true), orderBy("createdAt", "desc"), limit(numOfPosts))
   
-    const invest = (await getDocs(postsQuery)).docs.map(postToJSON);
+    const posts = (await getDocs(postsQuery)).docs.map(postToJSON);
 
-    setFeedBottom(false)
-    setPosts(invest);
+    setFeedBottom(false);
+    setCurrentBtn("all");
+    setPosts(posts);
   }
 
   const getPosts = async () => {
@@ -142,7 +145,7 @@ export default function Home({uploadPosts}) {
     setLoading(false);
 
     if (loadedPosts.length < numOfPosts) {
-      setFeedBottom(true)
+      setFeedBottom(true);
     }
   }
 
@@ -167,19 +170,19 @@ export default function Home({uploadPosts}) {
         <>
           <div className = "mainLinkWrapper">
             <div className = "mainLinks">
-                    <button style={{background: (currentBtn === "all") ? "gray" : null}} onClick = {() => all() && setCurrentBtn("all")}>
+                    <button style={{background: (currentBtn === "all") ? "gray" : null}} onClick = {() => all()}>
                       All
                     </button>
-                    <button style={{background: (currentBtn === "investor") ? "red" : null}} onClick = {() => investor() && setCurrentBtn("investor")}>
+                    <button style={{background: (currentBtn === "investor") ? "red" : null}} onClick = {() => investor()}>
                       Investors
                     </button>
-                    <button style={{background: (currentBtn === "investment") ? "blue" : null}} onClick = {() => investment() && setCurrentBtn("investment")}>
+                    <button style={{background: (currentBtn === "investment") ? "blue" : null}} onClick = {() => investment()}>
                       Investment
                     </button>
-                    <button style={{background: (currentBtn === "mentor") ? "orange" : null}} onClick = {() => mentor() && setCurrentBtn("mentor")}>
+                    <button style={{background: (currentBtn === "mentor") ? "orange" : null}} onClick = {() => mentor()}>
                       Mentors
                     </button>
-                    <button style={{background: (currentBtn === "tracking") ? "gray" : null}} onClick = {() => tracking() && setCurrentBtn("tracking")}>
+                    <button style={{background: (currentBtn === "tracking") ? "gray" : null}} onClick = {() => tracking()}>
                       Tracking
                     </button>
                     <button onClick={() => setSearching(true)}>
@@ -191,12 +194,12 @@ export default function Home({uploadPosts}) {
               <Feed posts = {posts} />
 
               <div>
-                {!loading && !feedBottom && (posts.length != 0) && (posts.length % numOfPosts === 0) && <button className = "generalButton" onClick = {(currentBtn === "all") ? getPosts : getOtherTypes}>Next</button>}
+                {(!loading) && (!feedBottom) && (posts?.length !== 0) && (posts.length % numOfPosts === 0) && (<button className = "generalButton" onClick = {(currentBtn === "all") ? getPosts() : getOtherTypes()}>More</button>)}
               </div>
 
               <Loader show = {loading} />
               
-              {feedBottom && <span>You have reached the end!</span>}
+              {(feedBottom) && (posts?.length !== 0) && (posts.length % numOfPosts !== 0) && (currentBtn !== "tracking") && (<span>You have reached the end!</span>)}
 
             </main>
           </>

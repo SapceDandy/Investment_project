@@ -22,7 +22,7 @@ export function Hit({ hit }) {
 
                     <Link href = {`/${hit.username}`}> 
                         <div className = "userInfo">
-                            <img style={{ width: "30px", height: "30px", borderRadius: "50px"}} src = {user?.photoURL} />     
+                            <img style={{ width: "30px", height: "30px", borderRadius: "50px"}} src = {(user?.photoURL) ? user?.photoURL : "Banana.jpg"} />     
                                 <a>
                                     <strong>@{hit.username}</strong>
                                 </a>   

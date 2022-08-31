@@ -42,7 +42,7 @@ export default function Navbar({forwardedRef}) {
                             </li>
                             <li>
                             <Link href = {`/${username}`}>
-                                <img src = {user?.photoURL} ref = {ref4} />
+                                <img src = {(user?.photoURL) ? user?.photoURL : "Banana.jpg"} ref = {ref4} />
                             </Link>
                             </li>
                         </div>

@@ -6,26 +6,62 @@ import { useContext, useState } from "react";
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { useRouter } from 'next/router';
 import { getUser, postToJSON, firestore } from "../../library/firebase";
-import { query, collection, where, getDocs, limit, orderBy, getFirestore, doc, setDoc, deleteDoc, collectionGroup, serverTimestamp } from "firebase/firestore";
+import { query, collection, where, getDocs, limit, orderBy, getFirestore, doc, setDoc, deleteDoc, collectionGroup, serverTimestamp, Timestamp, startAfter } from "firebase/firestore";
 import { useEffect } from "react";
+import Loader from "../../components/Loader";
 import CurrentFeed from "../../components/CurrentFeed";
 import FollowFeed from "../../components/FollowFeed";
 import MessageList from "../../components/Messages";
 import uniqid from 'uniqid';
 import toast from 'react-hot-toast';
 
-export default function UserPage({ user, posts }) {
+export async function getServerSideProps({ query: urlQuery }) {
+    const { username } = urlQuery;
+
+    const userDoc = await getUser(username); 
+
+    if (!userDoc) {
+        return {
+            notFound: true,
+        };
+    }
+
+    let user = null;
+    let post = null;
+
+    if (userDoc) {
+        user = userDoc.data();
+
+        const postsQuery = query(
+            collection(firestore, userDoc.ref.path, 'posts'),
+            where('published', '==', true),
+            orderBy('createdAt', 'desc'),
+            limit(5)
+          );
+        post = (await getDocs(postsQuery)).docs.map(postToJSON);
+    }
+
+    return {
+        props: { user, post },
+    };
+}
+
+export default function UserPage({user, post}) {
     const { username, user: currentUser } = useContext(UserContext);
     const [currentlyPressed, setCurrentlyPressed] = useState("Posts");
-    const [currentPost, setCurrentPost] = useState(posts);
+    const [currentPost, setCurrentPost] = useState(post);
     const [sendMessage, setSendMessage] = useState(false);
+    const [feedBottom, setFeedBottom] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [posts, setPosts] = useState(post);
 
     let following = null;
     let getFollow = null;
 
-    {!(!username) ?
-    (getFollow = doc(firestore, "Following", username, "BeingFollowed", user?.username)) &&
-    ([following] = useDocumentData(getFollow)) : null}
+    if (!(!username)) {
+    getFollow = doc(firestore, "Following", username, "BeingFollowed", user?.username);
+    [following] = useDocumentData(!(!username) ? getFollow : null);
+    }
 
     async function Follow() {
         const ref = doc(firestore, "Following", username, "BeingFollowed", user?.username);
@@ -85,18 +121,75 @@ export default function UserPage({ user, posts }) {
         setCurrentPost(following);
     }
 
+    const getFollowing = async () => {
+        setLoading(true);
+        const last = currentPost[currentPost.length - 1];
+
+        const lastInCurrentList = typeof last.createdAt === "number" ? Timestamp.fromMillis(last.createdAt) : last.createdAt;
+
+        const ref = collection(firestore, "Following", username, "BeingFollowed");
+
+        const postsQuery = query(ref, orderBy("createdAt", "desc"), startAfter(lastInCurrentList), limit(5));
+
+        const loadingFollowers = (await getDocs(postsQuery)).docs.map((doc) => doc.data());
+
+        setCurrentPost(currentPost.concat(loadingFollowers))
+        setLoading(false);
+
+        if (loadingFollowers.length < 5) {
+            setFeedBottom(true)
+        }
+    }
+
     async function MyMessages() {
         console.log("Username: ", username)
         const ref = collection(firestore, "MessageGroup", username, "With");
-        const refQuery = query(ref, orderBy("createAt", "desc"));
+        const refQuery = query(ref, orderBy("createdAt", "desc"));
         
         const currentMessage = (await getDocs(refQuery)).docs?.map((doc) => doc?.data());
 
-        //console.log("Username: ", username)
-        //console.log("Message: ", currentMessage)
-        //console.log("Ref: ", ref)
         setCurrentlyPressed("MyMessages");
         setCurrentPost(currentMessage);
+    }
+
+    const getMessages = async () => {
+        setLoading(true);
+        const last = sendMessage[sendMessage.length - 1];
+
+        const lastInCurrentList = typeof last.createdAt === "number" ? Timestamp.fromMillis(last.createdAt) : last.createdAt;
+
+        const ref = collectionGroup(firestore, "MessageGroup", username, "With");
+
+        const postsQuery = query(ref, orderBy("createdAt", "desc"), startAfter(lastInCurrentList), limit(5));
+
+        const loadMessages = (await getDocs(postsQuery)).docs.map((doc) => doc.data());
+
+        setSendMessage(sendMessage.concat(loadMessages))
+        setLoading(false);
+
+        if (loadMessages.length < 5) {
+            setFeedBottom(true)
+        }
+    }
+
+    const getPosts = async () => {
+        setLoading(true);
+        const last = posts[posts.length - 1];
+
+        const lastInCurrentList = typeof last.createdAt === "number" ? Timestamp.fromMillis(last.createdAt) : last.createdAt;
+
+        const ref = collectionGroup(firestore, "posts");
+
+        const postsQuery = query(ref, where("username", "==", user?.username), where("published", "==", true), orderBy("createdAt", "desc"), startAfter(lastInCurrentList), limit(5));
+
+        const loadedPosts = (await getDocs(postsQuery)).docs.map((doc) => doc.data());
+
+        setPosts(posts.concat(loadedPosts))
+        setLoading(false);
+
+        if (loadedPosts.length < 5) {
+            setFeedBottom(true)
+        }
     }
 
     return (
@@ -117,19 +210,30 @@ export default function UserPage({ user, posts }) {
                         <button type = "button" style = {{background: (sendMessage) ? "dimgrey" : null}}onClick = {() => setSendMessage(!sendMessage)}>Send Message</button>
                     </div>
                 )}
-                {console.log("Current Message: ", currentPost)}
+
                 {(username === user?.username) && (  
                     (currentlyPressed === "Posts") ? <Feed posts = {posts} userPage/> :
                     (currentlyPressed === "Following") ? <FollowFeed currentPost = {currentPost} /> :
                     (currentlyPressed === "Tracking") ? <CurrentFeed currentPost = {currentPost}/> :
                     <MessageList currentPost = {currentPost}/>
                 )}
+
                 {(username !== user?.username) && (!sendMessage) && (
                     <Feed posts = {posts}/>
                 )}
+
                 {(username !== user?.username) && (sendMessage) && (
                     <Message user = {user} username = {username} currentUser = {currentUser}/>
                 )}
+
+                {(!loading) && (!feedBottom) && ((currentlyPressed !== "Posts") && (currentlyPressed !== "Following") && (currentlyPressed !== "Tracking")) && (sendMessage?.length !== 0) && (sendMessage.length % 5 === 0) && (<button type = "button" className = "userMoreButton" onClick = {() => getMessages()}>More</button>)}
+                {(currentlyPressed === "Posts") && (!loading) && (!feedBottom) && (posts?.length !== 0) && (posts.length % 5 === 0) && (<button type = "button" className = "userMoreButton" onClick = {() => getPosts()}>More</button>)}
+                {(currentlyPressed === "Following") && (!loading) && (!feedBottom) && (currentPost?.length !== 0) && (currentPost.length % 5 === 0) && (<button type = "button" className = "userMoreButton" onClick = {() => getFollowing()}>More</button>)}
+                <Loader show = {loading} />
+                
+                {(feedBottom) && ((currentlyPressed !== "Posts") && (currentlyPressed !== "Following") && (currentlyPressed !== "Tracking"))  && (sendMessage?.length !== 0) && (<span style = {{marginBottom: "2rem"}}>You have reached the end!</span>)}
+                {(feedBottom) && (currentlyPressed === "Posts") && (posts?.length !== 0) && (<span style = {{marginBottom: "2rem"}}>You have reached the end!</span>)}
+                {(feedBottom) && (currentlyPressed === "Following") && (currentPost?.length !== 0) && (<span style = {{marginBottom: "2rem"}}>You have reached the end!</span>)}
             </AuthCheck>
         </main>
     )

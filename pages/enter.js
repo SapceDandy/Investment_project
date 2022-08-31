@@ -10,11 +10,12 @@ import Link from "next/link";
 
 
 export default function EnterPage(props) {
-    const { user, loading, username } = useContext(UserContext);
+    const { user, username } = useContext(UserContext);
+    //const timer = setTimeout(1000)
 
     return(
       <main>
-          {(!user) && ((!loading) ? <SignInButton /> : null)}
+          {(!user) && (<SignInButton />)}
           {(user && !username) && (<UsernameForm username = {username}/>)} 
           {(user && username) && (<Redirect to = "/" />)}
       </main>
@@ -169,7 +170,7 @@ function SignInButton() {
 function UsernameForm() {
   const [formValue, setFormValue] = useState('');
   const [isValid, setIsValid] = useState(false);
-  const [loading, setLoading] = useState(false);
+  //const [loading, setLoading] = useState(false);
 
   const { user, username } = useContext(UserContext);
 
@@ -180,7 +181,7 @@ function UsernameForm() {
     const usernameDoc = doc(getFirestore(), 'usernames', formValue);
 
     const batch = writeBatch(getFirestore());
-    batch.set(userDoc, { username: formValue, photoURL: user?.photoURL, displayName: user?.displayName, uid: user.uid });
+    batch.set(userDoc, { username: formValue, photoURL: (user?.photoURL) ? user?.photoURL : null, displayName: user?.displayName, uid: user.uid });
     batch.set(usernameDoc, { uid: user.uid });
 
     await batch.commit();
@@ -203,11 +204,11 @@ function UsernameForm() {
     }
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     checkUsername(formValue);
-  }, [formValue]);
+  }, [formValue]);*/
 
-  const checkUsername = useCallback(
+  /*const checkUsername = useCallback(
     debounce(async (username) => {
       if (username.length >= 3) {
         const ref = doc(getFirestore(), 'usernames', username);
@@ -218,7 +219,7 @@ function UsernameForm() {
       }
     }, 500),
     []
-  );
+  );*/
 
   return (
     <>

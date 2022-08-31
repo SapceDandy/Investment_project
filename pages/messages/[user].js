@@ -91,12 +91,12 @@ export default function User() {
         const lastInCurrentList = typeof last?.createdAt === "number" ? Timestamp?.fromMillis(last?.createdAt) : last?.createdAt;
         const ref = collection(firestore, "MessageGroup", username, "With", user, "Messages");
         let newQueryRef = query(ref, orderBy("createdAt", "desc"), startAfter(lastInCurrentList), limit(10));
-        const loadedPosts = (await getDocs(newQueryRef))?.docs?.map((docs) => docs?.data());
+        const loadedMessages = (await getDocs(newQueryRef))?.docs?.map((docs) => docs?.data());
 
-        setMessage(message.concat(loadedPosts))
+        setMessage(message.concat(loadedMessages))
         setLoading(false);
 
-        if (loadedPosts.length < 10) {
+        if (loadedMessages?.length < 10) {
             setFeedBottom(true)
         }
     }
@@ -105,7 +105,7 @@ export default function User() {
         <>
             <h1 className = "centerUserMessageText">@{user}</h1>
             <Link href = "/messages">
-                <button className = "centerUserMessageBackButton">Back</button>
+                <button className = "centerUserMessageBackButton">Messages</button>
             </Link>
             <div className = "userMessageWrapper">
                 <div className = "messageFeedWrapper">

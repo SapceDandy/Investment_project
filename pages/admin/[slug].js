@@ -43,9 +43,9 @@ function PostManager() {
 
             <aside>
               {/*<button onClick={() => setPreview(!preview)}>{preview ? 'Edit' : 'Preview'}</button>*/}
-              <Link href={`/${post.username}/${post.slug}`}>
+              {(post?.published) && (<Link href={`/${post.username}/${post.slug}`}>
                 <button>Live view</button>
-              </Link>
+              </Link>)}
               <DeletePostButton postRef={postRef} />
             </aside>
           </div>
@@ -110,7 +110,7 @@ function PostForm({ defaultValues, postRef, preview }) {
             placeholder = "Main content..."
           ></textarea>
 
-          {errors.content && <p>{errors.content.message}</p>}
+          {errors.content && <p style = {{color: "red"}}>{errors.content.message}</p>}
 
           <fieldset>
             <span>Catagory: </span>

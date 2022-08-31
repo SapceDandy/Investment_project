@@ -44,7 +44,7 @@ function PostItem({ post, admin = false }) {
                 </Link>
                 <Link href = {`/${userId?.username}`}> 
                     <div className = "useInfoMessage">
-                        <img style = {{ width: "30px", height: "30px", borderRadius: "50px"}} src = {userId?.photoURL} />     
+                        <img style = {{ width: "30px", height: "30px", borderRadius: "50px"}} src = {(userId?.photoURL) ? userId?.photoURL : "Banana.jpg"} />     
                         <a>
                             <strong>@{userId?.username}</strong>
                         </a>   
