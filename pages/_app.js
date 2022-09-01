@@ -5,6 +5,7 @@ import { UserContext } from "../library/context";
 import { useState, useEffect, useRef } from "react";
 import { useUserData } from "../library/hooks";
 import { motion } from "framer-motion";
+import Head from "next/head";
 
 function MyApp({ Component, pageProps }) {
   const ref = useRef(null)
@@ -84,6 +85,10 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <>
+    <Head>
+      <title>Investment App</title>
+      <link rel = "icon" href = "/favicon.png"/>
+    </Head>
     {/*<motion.div
         variants = {variants}
         animate = {cursorVariant}

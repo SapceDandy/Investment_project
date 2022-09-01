@@ -162,12 +162,12 @@ a {
 /*MIGHT CHANGE HOW THE LOADER LOOKS LATER... IF I HAVE TIME (First: 7/29/22 /Last: 7/29/22)*/
 /*Colors will need to be adjusted*/
 .loader {
-  border: 10px solid transparent;
-  border-top: 10px solid black;
+  border: 8px solid transparent;
+  border-top: 8px solid black;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 2s linear infinite;
+  width: 35px;
+  height: 35px;
+  animation: spin .25s linear infinite;
 }
 
 @keyframes spin {

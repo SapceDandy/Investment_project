@@ -33,8 +33,7 @@ export async function getStaticProps({ params }) {
 }
 
 export async function getStaticPaths() {
-    
-    const q = query(collectionGroup(firestore, 'posts'), limit(10));
+    const q = query(collectionGroup(firestore, 'posts'), limit(5));
     const snapshot = getDocs(q)
     const paths = (await snapshot).docs.map((doc) => {
         let { username, slug } = doc.data();

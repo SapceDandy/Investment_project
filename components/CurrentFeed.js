@@ -36,6 +36,14 @@ function PostItem({ post, admin = false }) {
     const lastUserDoc = useDocumentData(lastUser);
 
     const { user, username } = useContext(UserContext);
+    let tracked = null;
+    let getTracking = null;
+
+    if (!(!user)) {
+        getTracking = doc(firestore, "trackPost", user?.uid, "tracking", post?.slug);
+    }
+
+    [tracked] = useDocumentData((!(!user)) ? getTracking : null);
 
     return (
         <div className = "wholeFeed">
@@ -49,7 +57,8 @@ function PostItem({ post, admin = false }) {
                             </a>)}
                 <Link href = {`/${post?.username}`}> 
                     <div className = "userInfo">
-                        <img style = {{ width: "30px", height: "30px", borderRadius: "50px"}} src = {lastUserDoc[0]?.photoURL} />     
+                        {(tracked?.slug === post?.slug) && <span style = {{color: "green", marginRight: ".5rem"}}>Tracking</span>}
+                        <img style = {{ width: "30px", height: "30px", borderRadius: "50px"}} src = {(lastUserDoc[0]?.photoURL) ? lastUserDoc[0]?.photoURL : "Banana.jpg"}/>     
                         <a>
                             <strong>@{post?.username}</strong>
                         </a>   
