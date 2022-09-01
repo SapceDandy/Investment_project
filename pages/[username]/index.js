@@ -194,7 +194,7 @@ export default function UserPage({user, post}) {
 
     return (
         <main className = "wrapper">
-            <AuthCheck fallback = {<Redirect to = "/enter" />} >
+            <AuthCheck fallback = {<Redirect to = "/enter" />}>
                 <Profile user = {user}/>
                 {(username === user?.username) && (
                 <div className = "userProfileButtons">

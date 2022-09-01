@@ -9,8 +9,10 @@ import uniqid from 'uniqid';
 import toast from 'react-hot-toast';
 
 export default function PostContent({ post }) {
-  const currentUser = auth.currentUser.uid;
+  const currentUser = auth?.currentUser?.uid;
   const { user, username } = useContext(UserContext);
+  let tracked = null;
+  let getTracking = null;
 
   const TrackPost = async() => {
     const ref = doc(firestore, "trackPost", currentUser, "tracking", post?.slug);
@@ -31,8 +33,11 @@ export default function PostContent({ post }) {
     toast('You are no longer tracking ', { icon: '🗑️' });
   }
 
-  const getTracking = doc(firestore, "trackPost", currentUser, "tracking", post?.slug);
-  const [tracked] = useDocumentData(getTracking);
+  if (!(!currentUser)) {
+    getTracking = doc(firestore, "trackPost", currentUser, "tracking", post?.slug);
+  }
+
+  [tracked] = useDocumentData((!(!currentUser)) ? getTracking : null);
   
   //const [response, setResponse] = useState("")
   //const [theTitle, setTheTitle] = useState("");
@@ -113,7 +118,7 @@ export default function PostContent({ post }) {
           <span>
             <div>
               Written by {' '}
-              <Link href={`/${post.username}/`}>
+              <Link href={(!(!currentUser)) ? `/${post.username}/` : "/enter"}>
                 <a style = {{fontWeight: "bold"}}> @{post.username}</a>
               </Link>{' '}
             </div>
@@ -127,7 +132,7 @@ export default function PostContent({ post }) {
       <div className = "postContentSpan"><ReactMarkdown>{post?.header}</ReactMarkdown></div>
       <span style = {{fontStyle: "italic"}}>Content:</span>
       <div className = "postContentSpan"><ReactMarkdown>{post?.content}</ReactMarkdown></div>
-      {currentUser !== post.uid && (
+      {(currentUser !== post.uid) && (!(!currentUser)) && (
       <form className="createNewResponseWrapper">
         {/*<label for = "response">If you are interested send a response</label><br />*/}
         <input placeholder="Responed if interested..." type = "text" id = "response" name = "response" value = {theMessage} onChange = {(e) => setTheMessage(e.target.value)}></input>
@@ -139,11 +144,11 @@ export default function PostContent({ post }) {
         <Link href={`/admin/${post?.slug}`}>
             <button className = "generalButtonBottomRight">Edit</button>
         </Link>)}
-        {(currentUser !== post?.uid) && (tracked?.slug !== post?.slug) && (
+        {(currentUser !== post?.uid) && (!(!currentUser)) && (tracked?.slug !== post?.slug) && (
             <button className = "generalButtonBottomRight" onClick = {() => TrackPost()}>Track Post</button>
         )}
 
-        {(currentUser?.uid !== post?.uid) && (tracked?.slug === post?.slug) && (
+        {(currentUser?.uid !== post?.uid) && (!(!currentUser)) && (tracked?.slug === post?.slug) && (
             <button className = "generalButtonBottomRight" onClick = {() => DeleteTracking()}>Stop Tracking</button>
         )}
       </div> 

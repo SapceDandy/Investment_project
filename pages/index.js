@@ -194,7 +194,7 @@ export default function Home({uploadPosts}) {
               <Feed posts = {posts} />
 
               <div>
-                {(!loading) && (!feedBottom) && (posts?.length !== 0) && (posts.length % numOfPosts === 0) && (<button className = "generalButton" onClick = {(currentBtn === "all") ? getPosts() : getOtherTypes()}>More</button>)}
+                {(!loading) && (!feedBottom) && (posts?.length !== 0) && (posts.length % numOfPosts === 0) && (<button className = "generalButton" onClick = {(currentBtn === "all") ? getPosts : getOtherTypes}>More</button>)}
               </div>
 
               <Loader show = {loading} />
@@ -208,9 +208,12 @@ export default function Home({uploadPosts}) {
     }
 
     {!user && (
-      <>
-        Hello
-      </>
+      <div className = "centerWelcomePage">
+        <h1>Welcome to Devon's Investment App</h1>
+        <Feed posts = {posts} />
+        {(!loading) && (!feedBottom) && (posts?.length !== 0) && (posts.length % numOfPosts === 0) && (<button className = "generalButton" onClick = {getPosts}>More</button>)}
+        {(feedBottom) && (posts?.length !== 0) && (posts.length % numOfPosts !== 0) && (<span>You have reached the end!</span>)}
+      </div>
     )}
     </>
   )

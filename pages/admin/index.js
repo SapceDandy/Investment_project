@@ -4,7 +4,7 @@ import { UserContext } from '../../library/context';
 import { firestore, auth } from '../../library/firebase';
 import { serverTimestamp, query, collection, orderBy, setDoc, doc } from 'firebase/firestore';
 
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import { useCollection } from 'react-firebase-hooks/firestore';
@@ -14,7 +14,7 @@ import toast from 'react-hot-toast';
 export default function AdminPostsPage(props) {
     return (
         <main>
-            <AuthCheck>
+            <AuthCheck fallback = {<Redirect to = "/enter" />}>
                 <PostList />
                 <CreateNewPost />
             </AuthCheck>
@@ -100,4 +100,12 @@ function CreateNewPost() {
       </button>
     </form>
   );
+}
+
+function Redirect({ to }) {
+  const router = useRouter();
+
+  useEffect(() => {
+      router.push(to);
+  }, [to])
 }

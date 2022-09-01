@@ -49,7 +49,7 @@ function PostItem({ post, admin = false, userPage = false}) {
                 </Link>) : (<a className = "feedCardTitle">
                                 <h2>{post?.title}</h2>
                             </a>)}
-                <Link href = {`/${post?.username}`}> 
+                <Link href = {(!(!(user))) ? `/${post?.username}` : "/enter"}> 
                     <div className = "userInfo">
                         <img style = {{ width: "30px", height: "30px", borderRadius: "50px"}} src = {(lastUserDoc[0]?.photoURL) ? lastUserDoc[0]?.photoURL : "Banana.jpg"} />     
                         <a>

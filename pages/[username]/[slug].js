@@ -1,5 +1,5 @@
 import { firestore, getUser, postToJSON, auth } from '../../library/firebase';
-import AuthCheck from "../../components/AuthCheck";
+//import AuthCheck from "../../components/AuthCheck";
 import HeartButton from "../../components/HeartButton";
 import { serverTimestamp, docs, doc, getDocs, getDoc, collection, query, limit, getFirestore, collectionGroup, setDoc, orderBy, where, addDoc } from 'firebase/firestore';
 import PostContent from "../../components/PostContent";
@@ -52,19 +52,21 @@ export async function getStaticPaths() {
 }
 
 export default function Post(props) {
+    const { user } = useContext(UserContext);
     const getPosts = doc(firestore, props?.path);
     const [realtimePost] = useDocumentData(getPosts);
 
     const post = realtimePost || props.post;
 
     return (
-        <AuthCheck
+        /*<AuthCheck
             fallback = {
                 <Link href="/enter">
                     You must sign-in to access this page
                 </Link>
             }
-        >
+        >*/ 
+        <>
             <div className = "wrapper">
                 <main className = "singlePost">
                     <section>
@@ -89,11 +91,12 @@ export default function Post(props) {
             <div className = "commentSectionWrapper">
                 <div className = "commentSectionTop">
                     <h1>Comment Section</h1>
-                    <MakeComment post = {post} />
+                    {(!(!(user))) && <MakeComment post = {post} />}
                 </div>
                 <CommentList post = {post} />
             </div>
-        </AuthCheck>
+        </>
+        /*</AuthCheck>*/
     )
 }
 

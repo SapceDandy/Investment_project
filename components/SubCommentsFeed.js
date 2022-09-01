@@ -7,7 +7,8 @@ import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 
 export default function SubCommentsFeed({subComments}) {
-    return (subComments?.length != 0) ? subComments?.map((subComments) => <Comment subComments = {subComments} />) : <div style = {{marginBottom: "2rem"}}>There are currently no subcomments... but you can be the first!</div>;
+    const { user } = useContext(UserContext);
+    return (subComments?.length != 0) ? subComments?.map((subComments) => <Comment subComments = {subComments} />) : (!(!user)) ? <div style = {{marginBottom: "2rem"}}>There are currently no subcomments... but you can be the first!</div> : <div style = {{marginBottom: "2rem"}}>There are currently no subcomments... but you can be the first if you <Link href = "/enter"><span style = {{fontWeight: "bold", pointerEvents: "all", cursor: "pointer"}}>sign-in</span></Link>!</div>;
 }
 
 function DeleteCommentButton({ subCommentRef }) {
@@ -48,8 +49,8 @@ function Comment({ subComments }) {
             <div className = "wholeFeedSubComments">
                 <div className = "topLevelOfComment">
                     <span className = "spanLeft">{subComments.subComment}</span>
-                    <Link href = {`/${subComments.username}`}>
-                        <span className = "commentUsername spanRight">@{subComments.username}</span>
+                    <Link href = {(!(!user)) ? `/${subComments.username}` : "/enter"}>
+                        <span style = {{pointerEvents: "all", cursor: "pointer"}} className = "commentUsername spanRight">@{subComments?.username}</span>
                     </Link>
                 </div>
 
@@ -63,10 +64,7 @@ function Comment({ subComments }) {
                         <span>💕 {post.heartCount} Likes</span>
                     </footer>*/}
 
-                    {console.log("User ID: ", user.uid)}
-                    {console.log("Sub ID: ", subComments.uid)}
-
-                    {(user.uid === subComments.currentUserId) && (
+                    {(user?.uid === subComments?.currentUserId) && (
                         <div className = "adminFeed spanRight">
                             <DeleteCommentButton subCommentRef={subCommentRef} />
                         </div>

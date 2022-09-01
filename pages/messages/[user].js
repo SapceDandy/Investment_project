@@ -11,7 +11,7 @@ import Loader from "../../components/Loader";
 import uniqid from 'uniqid';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-import { devNull } from 'os';
+//import { devNull } from 'os';
 
 export default function User() {
     const { user: currentUser, username } = useContext(UserContext);   
@@ -103,35 +103,37 @@ export default function User() {
 
     return (
         <>
-            <h1 className = "centerUserMessageText">@{user}</h1>
-            <Link href = "/messages">
-                <button className = "centerUserMessageBackButton">Messages</button>
-            </Link>
-            <div className = "userMessageWrapper">
-                <div className = "messageFeedWrapper">
-                    {!(!message) ? message?.map((currentMessage) => <MessageFeed currentMessage = {currentMessage} />) : null}
-                    {(!loading) && (!feedBottom) && (message?.length != 0) && (message?.length % 10 === 0) && (<button onClick = {() => getMessages()}>More</button>)}
-                    {(feedBottom) && (<span style = {{fontStyle: "italic"}}>You have no more messages</span>)}
-                    <Loader show = {loading} />
+            <AuthCheck fallback = {<Redirect to = "/enter" />}>
+                <h1 className = "centerUserMessageText">@{user}</h1>
+                <Link href = "/messages">
+                    <button className = "centerUserMessageBackButton">Messages</button>
+                </Link>
+                <div className = "userMessageWrapper">
+                    <div className = "messageFeedWrapper">
+                        {!(!message) ? message?.map((currentMessage) => <MessageFeed currentMessage = {currentMessage} />) : null}
+                        {(!loading) && (!feedBottom) && (message?.length != 0) && (message?.length % 10 === 0) && (<button onClick = {() => getMessages()}>More</button>)}
+                        {(feedBottom) && (<span style = {{fontStyle: "italic"}}>You have no more messages</span>)}
+                        <Loader show = {loading} />
+                    </div>
                 </div>
-            </div>
-            <div className = "createMessage">
-                <form className = "createMessageForm">
-                    <div className = "createMessegeContent">
-                        <div className = "createMessageTitle">
-                            <input placeholder = "Title: 35 characters or less..."type = "text" id = "title" name = "title" value = {currentTitle} onChange = {(e) => setCurrentTitle(e.target.value)}/>
+                <div className = "createMessage">
+                    <form className = "createMessageForm">
+                        <div className = "createMessegeContent">
+                            <div className = "createMessageTitle">
+                                <input placeholder = "Title: 35 characters or less..."type = "text" id = "title" name = "title" value = {currentTitle} onChange = {(e) => setCurrentTitle(e.target.value)}/>
+                            </div>
+                            <div className = "createMessageMessage">
+                                <input placeholder = "Message: required..." type = "text" id = "title" name = "title" value = {currentMessage} onChange = {(e) => setCurrentMessage(e.target.value)}/>
+                            </div>
+                            <button type = "button" disabled = {(currentMessage === "") || (currentTitle.length > 35)} onClick = {() => messageSent()}>Send</button>
                         </div>
-                        <div className = "createMessageMessage">
-                            <input placeholder = "Message: required..." type = "text" id = "title" name = "title" value = {currentMessage} onChange = {(e) => setCurrentMessage(e.target.value)}/>
-                        </div>
-                        <button type = "button" disabled = {(currentMessage === "") || (currentTitle.length > 35)} onClick = {() => messageSent()}>Send</button>
-                    </div>
-                    <div>
+                        <div>
 
-                        {(currentTitle.length > 35) && (<span style = {{color: "red"}}>You have exceeded the titel character limit</span>)}
-                    </div>
-                </form>
-            </div>
+                            {(currentTitle.length > 35) && (<span style = {{color: "red"}}>You have exceeded the titel character limit</span>)}
+                        </div>
+                    </form>
+                </div>
+            </AuthCheck>
         </>
     )
 }
@@ -173,4 +175,12 @@ function MessageFeed({ currentMessage }) {
             </div>)}
         </div>
     )
+}
+
+function Redirect({ to }) {
+    const router = useRouter();
+
+    useEffect(() => {
+        router.push(to);
+    }, [to])
 }

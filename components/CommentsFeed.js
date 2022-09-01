@@ -9,7 +9,8 @@ import uniqid from 'uniqid';
 import toast from 'react-hot-toast';
 
 export default function CommentsFeed({ comments }) {
-    return (comments?.length != 0) ? comments?.map((comments) => <Comment comments = {comments} />) : <div style = {{marginBottom: "2rem"}}>There are currently no comments... but you can be the first!</div>;
+    const { user } = useContext(UserContext);
+    return (comments?.length != 0) ? comments?.map((comments) => <Comment comments = {comments} />) : (!(!user)) ? <div style = {{marginBottom: "2rem"}}>There are currently no comments... but you can be the first!</div> : <div style = {{marginBottom: "2rem"}}>There are currently no comments... but you can be the first if you <Link href = "/enter"><span style = {{fontWeight: "bold", pointerEvents: "all", cursor: "pointer"}}>sign-in</span></Link>!</div> ;
 }
 
 function DeleteCommentButton({ commentRef }) {
@@ -53,8 +54,8 @@ function Comment({ comments }) {
             <div className = "wholeFeedComments">
                 <div className = "topLevelOfComment">
                     <span className = "spanLeft">{comments?.comment}</span>
-                    <Link href = {`/${comments?.username}`}>
-                        <span className = "commentUsername spanRight">@{comments.username}</span>
+                    <Link href = {(!(user)) ? `/${comments?.username}` : "/enter"}>
+                        <span style = {{pointerEvents: "all", cursor: "pointer"}} className = "commentUsername spanRight">@{comments.username}</span>
                     </Link>
                 </div>
 
@@ -69,7 +70,7 @@ function Comment({ comments }) {
                     
                         <div className = "adminFeed spanRight">
                             <button style = {{background: (showSubs) ? "dimgrey" : null}} onClick = {() => (showSubs) ? setShowSubs(false) : setShowSubs(true)}>Comments {/*(counter !== 0) ? `${counter}` : null*/}</button>
-                            <button style = {{background: (userReplied) ? "dimgrey" : null}} onClick = {() => (userReplied) ? setUserReplied(false) : setUserReplied(true)}>Reply</button>
+                            {(!(!user)) && (<button style = {{background: (userReplied) ? "dimgrey" : null}} onClick = {() => (userReplied) ? setUserReplied(false) : setUserReplied(true)}>Reply</button>)}
                             {(username === comments?.username) && (
                                 <DeleteCommentButton commentRef = {commentRef} />
                             )}
@@ -82,7 +83,7 @@ function Comment({ comments }) {
                         <ReplyList comments = {comments} />
                     </div>
                 )}
-                {userReplied && (
+                {(userReplied) && (
                     <div>
                         <Reply comments = {comments} />
                     </div>
@@ -114,23 +115,23 @@ function Reply({comments}) {
     const { username } = useContext(UserContext);
     const [subComment, setSubComment] = useState('');
     const subCommentId = uniqid();
-    const isValid = subComment.length !== 0;
+    const isValid = subComment?.length !== 0;
 
     const createSubComment = async (e) => {
         e.preventDefault();
-        const currentUserId = auth.currentUser.uid;
-        const slug = comments.slug;
-        const lastPost = comments.commentId;
-        const uid = comments.uid;
-        const ref = doc(firestore, "users", comments.uid, "posts", comments.slug, "comments", comments.commentId, "subComments", `${subCommentId}`);
+        const currentUserId = auth?.currentUser?.uid;
+        const slug = comments?.slug;
+        const lastPost = comments?.commentId;
+        const uid = comments?.uid;
+        const ref = doc(firestore, "users", comments?.uid, "posts", comments?.slug, "comments", comments?.commentId, "subComments", `${subCommentId}`);
         
         const today = new Date();
-        const currentDate = `${today.getFullYear()}-${today.getDate()}-${(today.getMonth()+1)}`;
+        const currentDate = `${today?.getFullYear()}-${today?.getDate()}-${(today?.getMonth()+1)}`;
         const monthsDict = {"1": "January", "2": "February", "3": "March", "4": "April", "5": "May", "6": "June", "7": "July", "8": "August", "9": "September", "10": "October", "11": "November", "12": "December"};
-        const dayValue = currentDate.substring(5, 7);
-        const monthNumber = (currentDate.length != 9) ? currentDate.substring(8, 10) : currentDate.substring(8, 9);
+        const dayValue = currentDate?.substring(5, 7);
+        const monthNumber = (currentDate.length != 9) ? currentDate?.substring(8, 10) : currentDate?.substring(8, 9);
         const monthString = monthsDict[monthNumber];
-        const yearValue = currentDate.substring(0, 4);
+        const yearValue = currentDate?.substring(0, 4);
 
         const data = {
             subComment,

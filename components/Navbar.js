@@ -29,11 +29,9 @@ export default function Navbar({forwardedRef}) {
                     <>
                         <div>
                             <li>
-                                <Link href = "/enter">
-                                    <button onClick={signOutNow} ref = {ref2}> 
-                                            Sign Out 
-                                    </button>
-                                </Link>
+                                <button onClick={signOutNow} ref = {ref2}> 
+                                        Sign Out 
+                                </button>
                             </li>
                             <li>
                             <Link href = "/admin">
