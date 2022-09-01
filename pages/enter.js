@@ -10,14 +10,18 @@ import Link from "next/link";
 
 
 export default function EnterPage(props) {
-    const { user, username } = useContext(UserContext);
+    //const checkForUsername = doc(firestore, "user")
+    const { username, user } = useContext(UserContext);
+    //const { alreadyUser, setAlready}
     //const timer = setTimeout(1000)
-
+    console.log("User: ", user?.metadata?.creationTime.slice(0, 21))
+    const currentT = new Date().toUTCString();
+    console.log("Current: ", currentT.slice(0, 21))
     return(
       <main>
           {(!user) && (<SignInButton />)}
-          {(user && !username) && (<UsernameForm username = {username}/>)} 
-          {(user && username) && (<Redirect to = "/" />)}
+          {((!username)) && (user?.metadata?.creationTime.slice(0, 21) === currentT.slice(0, 21)) && (user) && (<UsernameForm username = {username}/>)} 
+          {((user) && (username)) && (<Redirect to = "/" />)}
       </main>
     )
 }
@@ -170,7 +174,7 @@ function SignInButton() {
 function UsernameForm() {
   const [formValue, setFormValue] = useState('');
   const [isValid, setIsValid] = useState(false);
-  //const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { user, username } = useContext(UserContext);
 
@@ -204,11 +208,11 @@ function UsernameForm() {
     }
   };
 
-  /*useEffect(() => {
+  useEffect(() => {
     checkUsername(formValue);
-  }, [formValue]);*/
+  }, [formValue]);
 
-  /*const checkUsername = useCallback(
+  const checkUsername = useCallback(
     debounce(async (username) => {
       if (username.length >= 3) {
         const ref = doc(getFirestore(), 'usernames', username);
@@ -219,7 +223,7 @@ function UsernameForm() {
       }
     }, 500),
     []
-  );*/
+  );
 
   return (
     <>

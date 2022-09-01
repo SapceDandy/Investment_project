@@ -12,6 +12,14 @@ const firebaseConfig = {
   appId: "1:1002999613817:web:b26416d2e6a6872c90c7a8",
   measurementId: "G-TY4Y2BNYKE"
 } 
+
+/*apiKey: process.env.APIKEY,
+  authDomain: process.env.AUTHDOMAIN,
+  projectId: process.env.PROJECTID,
+  storageBucket: process.env.STORAGEBUCKET,
+  messagingSenderId: process.env.MESSAGINGSENDERID,
+  appId: process.env.APPID,
+  measurementId: process.env.MEASUREMENTID */
  
 function createFirebaseApp(config) {
   try {
