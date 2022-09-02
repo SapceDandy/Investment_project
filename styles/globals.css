@@ -1425,7 +1425,7 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 .linkedMessageWrapper {
   display: flex;
   flex-direction: row;
-  align-items: end;
+  align-items: flex-end;
 }
 
 .linkedMessage {

@@ -94,7 +94,7 @@ function SignInButton() {
     <div className = "signUpInWrapper">
       <div className = "formWrapper">
         <form className = "signUpForm">
-          <h3>SignUp</h3>
+          <h3>Sign-up</h3>
           <div className = "signUpInfo">
             <label for = "email">Email<span style ={{color: "red"}}>*</span></label>
             <input type = "text" id = "email" name = "Email" value = {email} onChange = {(e) => setEmail(e.target.value)}/>
@@ -140,7 +140,7 @@ function SignInButton() {
         </form>
 
         <form className = "signUpForm">
-          <h3>SignIn</h3>
+          <h3>Sign-in</h3>
           <div className = "signUpInfo">
             <label for = "logInEmail">Email</label>
             <input type = "text" id = "logInmail" name = "Email" value = {logInEmail} onChange = {(e) => setLogInEmail(e.target.value)}/>
