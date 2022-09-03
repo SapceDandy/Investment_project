@@ -4,42 +4,44 @@ import { doc, deleteDoc} from "firebase/firestore";
 import { UserContext } from "../library/context";
 import { useContext } from "react";
 import { useRouter } from 'next/router';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
 import toast from 'react-hot-toast';
 
 export function Hit({ hit }) {
-    const { user } = useContext(UserContext);
-    const postRef = doc(firestore, "users", hit.uid, "posts", hit.slug)
-
+    const { user, username } = useContext(UserContext);
+    const lastUser = doc(firestore, "users", hit?.uid)
+    const lastUserDoc = useDocumentData(lastUser);
+    const postRef = doc(firestore, "users", hit?.uid, "posts", hit.slug)
     return (
         <>
-            {hit.published === true && (<div className = "wholeFeed">
+            {hit?.published === true && (<div className = "wholeFeed">
                 <div className = "topOfFeedCard">
-                    <Link href={`/${hit.username}/${hit.slug}`}>  
+                    <Link href={`/${hit?.username}/${hit?.slug}`}>  
                         <a className = "feedCardTitle">
                             <h2>{hit.title}</h2>
                         </a>
                     </Link>
 
-                    <Link href = {`/${hit.username}`}> 
+                    <Link href = {`/${hit?.username}`}> 
                         <div className = "userInfo">
-                            <img style={{ width: "30px", height: "30px", borderRadius: "50px"}} src = {(user?.photoURL) ? user?.photoURL : "Banana.jpg"} />     
+                            <img style={{ width: "30px", height: "30px", borderRadius: "50px"}} src = {(!(!lastUserDoc[0]?.photoURL)) ? lastUserDoc[0]?.photoURL : "Banana.jpg"} />     
                                 <a>
-                                    <strong>@{hit.username}</strong>
+                                    <strong>@{hit?.username}</strong>
                                 </a>   
                         </div>
                     </ Link>
                 </div>
 
-                <Link href={`/${hit.username}/${hit.slug}`}>
+                <Link href={`/${hit?.username}/${hit?.slug}`}>
                     <div className = "feedLink"></div>
                 </Link>
 
                 <div className = "feedHeader">
-                    {hit.header}
+                    {hit?.header}
                 </div>
 
                 <div className = "postStatusWrap">
-                    <div className = "postStatus" style = {{background: (hit.status === "investor") ? "red": (hit.status === "mentor") ? "orange" : (hit.status === "investment") ? "blue": "grey"}}>
+                    <div className = "postStatus" style = {{background: (hit?.status === "investor") ? "red": (hit?.status === "mentor") ? "orange" : (hit?.status === "investment") ? "blue": "grey"}}>
                         {hit.status}
                     </div>
 

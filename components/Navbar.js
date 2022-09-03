@@ -1,14 +1,23 @@
 import Link from "next/link";
 import { useContext, useRef, useEffect, forwardRef } from "react";
 import { UserContext } from "../library/context";
+import { firestore } from "../library/firebase";
+import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { auth } from '../library/firebase';
 import { signOut } from 'firebase/auth';
+import { doc } from "firebase/firestore";
 import { useRouter } from 'next/router';
 
 export default function Navbar({forwardedRef}) {
     const [ ref, ref2, ref3, ref4] = forwardedRef;
-    
     const { user, username } = useContext(UserContext);
+    let userPhotoPath = null;
+    let userPhoto = null;
+
+    {(!(!user)) && (userPhotoPath = doc(firestore, "users", user?.uid))}
+    
+    userPhoto = useDocumentData((!(!username)) ? userPhotoPath : null);
+
     const router = useRouter();
 
     const signOutNow = () => {
@@ -40,7 +49,7 @@ export default function Navbar({forwardedRef}) {
                             </li>
                             <li>
                             <Link href = {`/${username}`}>
-                                <img src = {(user?.photoURL) ? user?.photoURL : "Banana.jpg"} ref = {ref4} />
+                                <img src = {userPhoto[0]?.photoURL ? userPhoto[0]?.photoURL : "Banana.jpg"} ref = {ref4} />
                             </Link>
                             </li>
                         </div>

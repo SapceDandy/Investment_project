@@ -49,6 +49,8 @@ export async function getServerSideProps({ query: urlQuery }) {
 export default function UserPage({user, post}) {
     const { username, user: currentUser } = useContext(UserContext);
     const [currentlyPressed, setCurrentlyPressed] = useState("Posts");
+    const lastUser = user?.username;
+    const [equalLast, setEqualLast] = useState(null)
     const [currentPost, setCurrentPost] = useState(post);
     const [sendMessage, setSendMessage] = useState(false);
     const [feedBottom, setFeedBottom] = useState(false);
@@ -60,8 +62,9 @@ export default function UserPage({user, post}) {
 
     if (!(!username)) {
     getFollow = doc(firestore, "Following", username, "BeingFollowed", user?.username);
-    [following] = useDocumentData(!(!username) ? getFollow : null);
     }
+
+    [following] = useDocumentData(!(!username) ? getFollow : null);
 
     async function Follow() {
         const ref = doc(firestore, "Following", username, "BeingFollowed", user?.username);
@@ -142,7 +145,6 @@ export default function UserPage({user, post}) {
     }
 
     async function MyMessages() {
-        console.log("Username: ", username)
         const ref = collection(firestore, "MessageGroup", username, "With");
         const refQuery = query(ref, orderBy("createdAt", "desc"));
         
@@ -192,9 +194,21 @@ export default function UserPage({user, post}) {
         }
     }
 
+    async function CurrentPosts() {
+        const ref = collectionGroup(firestore, "posts");
+
+        const postsQuery = query(ref, where("username", "==", user?.username), where("published", "==", true), orderBy("createdAt", "desc"), limit(5));
+
+        const loadedPosts = (await getDocs(postsQuery)).docs.map((doc) => doc.data());
+
+        setCurrentlyPressed("Posts");
+        setPosts(loadedPosts)
+    }
+
     return (
         <main className = "wrapper">
             <AuthCheck fallback = {<Redirect to = "/enter" />}>
+                {(lastUser !== equalLast) && (CurrentPosts()) && (setEqualLast(lastUser))}
                 <Profile user = {user}/>
                 {(username === user?.username) && (
                 <div className = "userProfileButtons">
