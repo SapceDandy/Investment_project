@@ -45,7 +45,7 @@ export function Hit({ hit }) {
                         {hit.status}
                     </div>
 
-                    {user && (
+                    {(hit?.username === username) && (
                         <div className = "adminFeedHit">
                             <Link href={`/admin/${hit.slug}`}>
                                 <h3>

@@ -110,29 +110,30 @@ export default function UserPage({user, post}) {
 
         track = track.filter((docs) => docs != null);
        
-        setCurrentlyPressed("Tracking");
         setCurrentPost(track);
+        setCurrentlyPressed("Tracking");
     }
 
     async function Following() {
         const ref = collection(firestore, "Following", user?.username, "BeingFollowed");
-        const refQuery = query(ref);
+        const refQuery = query(ref, orderBy("username", "desc"), limit(5));
         
         const following = (await getDocs(refQuery)).docs?.map((doc) => doc?.data());
 
-        setCurrentlyPressed("Following");
         setCurrentPost(following);
+        setCurrentlyPressed("Following");
+        setFeedBottom(false);
     }
 
     const getFollowing = async () => {
         setLoading(true);
         const last = currentPost[currentPost.length - 1];
 
-        const lastInCurrentList = typeof last.createdAt === "number" ? Timestamp.fromMillis(last.createdAt) : last.createdAt;
+        const lastInCurrentList = last?.username;
 
         const ref = collection(firestore, "Following", username, "BeingFollowed");
 
-        const postsQuery = query(ref, orderBy("createdAt", "desc"), startAfter(lastInCurrentList), limit(5));
+        const postsQuery = query(ref, orderBy("username", "desc"), startAfter(lastInCurrentList), limit(5));
 
         const loadingFollowers = (await getDocs(postsQuery)).docs.map((doc) => doc.data());
 
@@ -146,27 +147,28 @@ export default function UserPage({user, post}) {
 
     async function MyMessages() {
         const ref = collection(firestore, "MessageGroup", username, "With");
-        const refQuery = query(ref, orderBy("createdAt", "desc"));
+        const refQuery = query(ref, orderBy("createdAt", "desc"), limit(5));
         
         const currentMessage = (await getDocs(refQuery)).docs?.map((doc) => doc?.data());
 
         setCurrentlyPressed("MyMessages");
         setCurrentPost(currentMessage);
+        setFeedBottom(false);
     }
 
     const getMessages = async () => {
         setLoading(true);
-        const last = sendMessage[sendMessage.length - 1];
+        const last = currentPost[currentPost.length - 1];
 
         const lastInCurrentList = typeof last.createdAt === "number" ? Timestamp.fromMillis(last.createdAt) : last.createdAt;
+        
+        const ref = collection(firestore, "MessageGroup", username, "With");
 
-        const ref = collectionGroup(firestore, "MessageGroup", username, "With");
+        const messageQuery = query(ref, orderBy("createdAt", "desc"), startAfter(lastInCurrentList), limit(5));
 
-        const postsQuery = query(ref, orderBy("createdAt", "desc"), startAfter(lastInCurrentList), limit(5));
+        const loadMessages = (await getDocs(messageQuery)).docs.map((doc) => doc.data());
 
-        const loadMessages = (await getDocs(postsQuery)).docs.map((doc) => doc.data());
-
-        setSendMessage(sendMessage.concat(loadMessages))
+        setCurrentPost(currentPost.concat(loadMessages))
         setLoading(false);
 
         if (loadMessages.length < 5) {
@@ -240,14 +242,14 @@ export default function UserPage({user, post}) {
                     <Message user = {user} username = {username} currentUser = {currentUser}/>
                 )}
 
-                {(!loading) && (!feedBottom) && ((currentlyPressed !== "Posts") && (currentlyPressed !== "Following") && (currentlyPressed !== "Tracking")) && (sendMessage?.length !== 0) && (sendMessage.length % 5 === 0) && (<button type = "button" className = "userMoreButton" onClick = {() => getMessages()}>More</button>)}
+                {(!loading) && (!feedBottom) && (currentlyPressed === "MyMessages") && (currentPost?.length !== 0) && (currentPost?.length % 5 === 0) && (<button type = "button" className = "userMoreButton" onClick = {() => getMessages()}>More</button>)}
                 {(currentlyPressed === "Posts") && (!loading) && (!feedBottom) && (posts?.length !== 0) && (posts.length % 5 === 0) && (<button type = "button" className = "userMoreButton" onClick = {() => getPosts()}>More</button>)}
                 {(currentlyPressed === "Following") && (!loading) && (!feedBottom) && (currentPost?.length !== 0) && (currentPost.length % 5 === 0) && (<button type = "button" className = "userMoreButton" onClick = {() => getFollowing()}>More</button>)}
                 <Loader show = {loading} />
                 
-                {(feedBottom) && ((currentlyPressed !== "Posts") && (currentlyPressed !== "Following") && (currentlyPressed !== "Tracking"))  && (sendMessage?.length !== 0) && (<span style = {{marginBottom: "2rem"}}>You have reached the end!</span>)}
+                {/*(feedBottom) && (currentlyPressed === "MyMessages")  && (currentPost?.length !== 0) && (<span style = {{marginBottom: "2rem"}}>You have reached the end!</span>)*/}
                 {(feedBottom) && (currentlyPressed === "Posts") && (posts?.length !== 0) && (<span style = {{marginBottom: "2rem"}}>You have reached the end!</span>)}
-                {(feedBottom) && (currentlyPressed === "Following") && (currentPost?.length !== 0) && (<span style = {{marginBottom: "2rem"}}>You have reached the end!</span>)}
+                {(feedBottom) && ((currentlyPressed === "Following") || (currentlyPressed === "MyMessages")) && (currentPost?.length !== 0) && (<span style = {{marginBottom: "2rem"}}>You have reached the end!</span>)}
             </AuthCheck>
         </main>
     )

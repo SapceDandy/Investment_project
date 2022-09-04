@@ -6,7 +6,7 @@ import { useContext, useState, useEffect } from "react";
 import { useDocumentData, useCollection, Timestamp } from 'react-firebase-hooks/firestore';
 import { useRouter } from 'next/router';
 import { getUser, postToJSON, firestore } from "../../library/firebase";
-import { query, collection, where, getDocs, limit, orderBy, getFirestore, doc, setDoc, deleteDoc, collectionGroup, serverTimestamp } from "firebase/firestore";
+import { query, collection, where, getDocs, limit, orderBy, getFirestore, doc, setDoc, deleteDoc, collectionGroup, serverTimestamp, startAfter } from "firebase/firestore";
 import CurrentFeed from "../../components/CurrentFeed";
 import FollowFeed from "../../components/FollowFeed";
 import MessageList from "../../components/Messages";
@@ -24,7 +24,7 @@ export default function MessagesIndex() {
 
     if (!(!username)) {
         const messageCollection = collection(firestore, "MessageGroup", username, "With");
-        messageQuery = query(messageCollection, orderBy("createdAt", "desc"), limit(10));
+        messageQuery = query(messageCollection, orderBy("createdAt", "desc"), limit(5));
     };
     
     const [col] = useCollection(!(!username) ? messageQuery : null);
@@ -32,19 +32,19 @@ export default function MessagesIndex() {
 
     const getMessages = async () => {
         setLoading(true);
-        const last = posts[posts.length - 1];
+        const last = currentPost[currentPost.length - 1];
         const lastInCurrentList = typeof last.createdAt === "number" ? Timestamp.fromMillis(last.createdAt) : last.createdAt;
 
         const ref = collection(firestore, "MessageGroup", username, "With");
 
-        const messagesQuery = query(ref, orderBy("createdAt", "desc"), startAfter(lastInCurrentList), limit(10));
+        const messages = query(ref, orderBy("createdAt", "desc"), startAfter(lastInCurrentList), limit(5));
         
-        const loadedMessages = (await getDocs(messagesQuery)).docs.map((doc) => doc.data());
+        const loadedMessages = (await getDocs(messages)).docs.map((doc) => doc.data());
 
-        setPosts(posts.concat(loadedMessages))
+        setCurrentPost(currentPost.concat(loadedMessages))
         setLoading(false);
 
-        if (loadedMessages.length < numOfPosts) {
+        if (loadedMessages.length < 5) {
             setFeedBottom(true)
         }
     }
@@ -54,8 +54,8 @@ export default function MessagesIndex() {
             <div className = "messagesPageWrapper">
                 <h1>Messages</h1>
                 <MessageList currentPost = {currentPost}/>
-                {(!loading) && (!feedBottom) && (currentPost?.length != 0) && (currentPost?.length % 10 === 0) && (<button type = "button" onClick = {() => getMessages()}>More</button>)}
-                {((feedBottom) || (currentPost?.length % 10 != 0)) && (<span style = {{fontStyle: "italic"}}>You have no more messages</span>)}
+                {(!(!username)) && (!loading) && (!feedBottom) && (<button type = "button" onClick = {() => getMessages()}>More</button>)}
+                {((feedBottom) || (currentPost?.length % 5 != 0)) && (<span style = {{fontStyle: "italic"}}>You have no more messages</span>)}
                 <Loader show = {loading} />
             </div>
         </AuthCheck>
