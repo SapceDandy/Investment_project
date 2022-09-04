@@ -210,7 +210,7 @@ export default function Home({uploadPosts}) {
     {!user && (
       <div className = "centerWelcomePage">
         <h1>Welcome to Devon's Investment App</h1>
-        <span>This project references the <a style = {{fontWeight: "bold"}} href = "https://next.fireship.io/" target="_blank">Next Fireship</a> project</span>
+        <span>This project inspired by the <a style = {{fontWeight: "bold"}} href = "https://next.fireship.io/" target="_blank">Next Fireship</a> project</span>
         <Feed posts = {posts} />
         {(!loading) && (!feedBottom) && (posts?.length !== 0) && (posts.length % numOfPosts === 0) && (<button className = "generalButton" onClick = {getPosts}>More</button>)}
         {(feedBottom) && (posts?.length !== 0) && (posts.length % numOfPosts !== 0) && (<span>You have reached the end!</span>)}
