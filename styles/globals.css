@@ -29,6 +29,9 @@ a {
 
 .onMobile {
   display: flex;
+  flex-direction: "row";
+  column-gap: "2vw";
+  
   @media screen and (max-width: 900px) {
     display: none;
   }
