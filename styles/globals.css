@@ -16,8 +16,6 @@ a {
   box-sizing: border-box;
   list-style: none;
   scroll-behavior: smooth;
-  /*cursor: none;*/
-  padding: 0rem 2rem;
 }
 
 * button {
