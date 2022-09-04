@@ -12,10 +12,16 @@ import Link from "next/link";
 export default function EnterPage(props) {
     const { username, user } = useContext(UserContext);
     const currentT = new Date().toUTCString();
+    const curretnRef = useRef(null);
+    const [currentWidth, setCurrentWidth] = useState(null);
+
+    useEffect(() => {
+      setCurrentHeight(curretnRef.current.clientWidth);
+    })
 
     return(
-      <main>
-          {(!user) && (<SignInButton />)}
+      <main ref = {curretnRef}>
+          {(!user) && (<SignInButton currentWidth = {currentWidth}/>)}
           {((!username)) && (user?.metadata?.creationTime.slice(0, 21) === currentT.slice(0, 21)) && (user) && (<UsernameForm username = {username}/>)} 
           {((user) && (username)) && (<Redirect to = "/" />)}
       </main>
@@ -30,7 +36,7 @@ function Redirect({ to }) {
   }, [to])
 }
 
-function SignInButton() {
+function SignInButton({currentWidth}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [logInEmail, setLogInEmail] = useState("");
@@ -86,15 +92,9 @@ function SignInButton() {
     });
   }
 
-  const curretnRef = useRef(null);
-  const [currentWidth, setCurrentWidth] = useState(null);
-
-  useEffect(() => {
-    setCurrentHeight(curretnRef.current.clientWidth)
-  })
 
   return (
-    <div ref = {currentRef} className = "signUpInWrapper">
+    <div className = "signUpInWrapper">
       <div className = "formWrapper">
         <form className = "signUpForm">
           <h3>Sign-up</h3>
