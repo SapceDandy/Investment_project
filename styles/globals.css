@@ -22,6 +22,16 @@ a {
 * button {
   pointer-events: all;
   cursor: pointer;
+  @media screen and (max-width: 900) {
+    margin: 0rem 2rem;
+  }
+}
+
+.onMobile {
+  display: flex;
+  @media screen and (max-width: 900) {
+    display: none;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

@@ -158,7 +158,7 @@ function SignInButton() {
         </form>
       </div>
 
-      <div style = {{display: "flex", flexDirection: "row", columnGap: "2vw"}}>
+      <div className = "onMobile" style = {{display: "flex", flexDirection: "row", columnGap: "2vw"}}>
         <button className = "popUpSingInBtn" onClick = {signInWithGoogle}>
             <img src = {'/google-png.png'} width="30px"/> Sign in with Google
         </button>
