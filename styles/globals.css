@@ -29,7 +29,7 @@ a {
 
 .onMobile {
   display: flex;
-  @media screen and (max-width: 900) {
+  @media screen and (max-width: 900px) {
     display: none;
   }
 }
