@@ -19,6 +19,7 @@ a {
   /*cursor: none;*/
   @media screen and (max-width: 900px) {
     margin: 0rem 2rem;
+    background: red;
   }
 }
 
@@ -37,7 +38,7 @@ a {
   }
 }
 
-@media (prefers-color-scheme: dark) {
+/*@media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
   }
@@ -45,7 +46,7 @@ a {
     color: white;
     background: black;
   }
-}
+}*/
 
 /*ALL PAGES*/
 .notNav {
