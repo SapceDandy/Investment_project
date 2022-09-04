@@ -2,7 +2,7 @@ import { googleAuthProvider, gitHubAuthProvider } from "../library/firebase"
 import { doc, writeBatch, getDoc, getFirestore } from 'firebase/firestore';
 import { signInWithPopup, signInWithEmailAndPassword, getAuth, createUserWithEmailAndPassword, updateProfile  } from 'firebase/auth';
 import { UserContext } from "../library/context";
-import { useEffect, useState, useCallback, useContext } from 'react';
+import { useEffect, useState, useCallback, useContext, useRef } from 'react';
 import debounce from 'lodash.debounce';
 import { useRouter } from 'next/router';
 import Link from "next/link";
@@ -10,13 +10,9 @@ import Link from "next/link";
 
 
 export default function EnterPage(props) {
-    //const checkForUsername = doc(firestore, "user")
     const { username, user } = useContext(UserContext);
-    //const { alreadyUser, setAlready}
-    //const timer = setTimeout(1000)
-    console.log("User: ", user?.metadata?.creationTime.slice(0, 21))
     const currentT = new Date().toUTCString();
-    console.log("Current: ", currentT.slice(0, 21))
+
     return(
       <main>
           {(!user) && (<SignInButton />)}
@@ -90,8 +86,15 @@ function SignInButton() {
     });
   }
 
+  const curretnRef = useRef(null);
+  const [currentWidth, setCurrentWidth] = useState(null);
+
+  useEffect(() => {
+    setCurrentHeight(curretnRef.current.clientWidth)
+  })
+
   return (
-    <div className = "signUpInWrapper">
+    <div ref = {currentRef} className = "signUpInWrapper">
       <div className = "formWrapper">
         <form className = "signUpForm">
           <h3>Sign-up</h3>
@@ -158,7 +161,7 @@ function SignInButton() {
         </form>
       </div>
 
-      <div className = "onMobile">
+      {(currentWidth > 900) && (<div className = "onMobile">
         <button className = "popUpSingInBtn" onClick = {signInWithGoogle}>
             <img src = {'/google-png.png'} width="30px"/> Sign in with Google
         </button>
@@ -166,7 +169,7 @@ function SignInButton() {
         <button className = "popUpSingInBtn" onClick = {signInWithGitHub}>
             <img src = {'/github.png'} width="30px"/> Sign in with GitHub
         </button>
-      </div>
+      </div>)}
     </div>
   );
 }

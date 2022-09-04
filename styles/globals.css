@@ -17,10 +17,7 @@ a {
   list-style: none;
   scroll-behavior: smooth;
   /*cursor: none;*/
-  @media screen and (max-width: 900px) {
-    margin: 0rem 2rem;
-    background: red;
-  }
+  padding: 0rem 2rem;
 }
 
 * button {
@@ -32,10 +29,6 @@ a {
   display: flex;
   flex-direction: "row";
   column-gap: "2vw";
-
-  @media screen and (max-width: 900px) {
-    display: none;
-  }
 }
 
 /*@media (prefers-color-scheme: dark) {
