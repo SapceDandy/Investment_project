@@ -16,7 +16,7 @@ export default function EnterPage(props) {
     const [currentWidth, setCurrentWidth] = useState(null);
 
     useEffect(() => {
-      setCurrentHeight(curretnRef.current.clientWidth);
+      setCurrentWidth(curretnRef.current.clientWidth);
     })
 
     return(
