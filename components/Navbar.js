@@ -39,7 +39,7 @@ export default function Navbar({forwardedRef}) {
                         <div>
                             <li>
                                 <button onClick={signOutNow} ref = {ref2}> 
-                                        Sign-out 
+                                        Sign Out 
                                 </button>
                             </li>
                             <li>
@@ -59,7 +59,7 @@ export default function Navbar({forwardedRef}) {
                 {!username && (
                     <li>
                         <Link href = "/enter">
-                            <button ref = {ref2}>Log-in</button>
+                            <button ref = {ref2}>Log In</button>
                         </Link>
                     </li>
                 )}
