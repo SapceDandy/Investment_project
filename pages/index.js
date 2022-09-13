@@ -210,6 +210,7 @@ export default function Home({uploadPosts}) {
 
     {!user && (
       <div className = "centerWelcomePage">
+        <h1>Hello World</h1>
         <h1>Welcome to Devon's Investment App</h1>
         <span>This project was inspired by the <a style = {{fontWeight: "bold"}} href = "https://next.fireship.io/" target="_blank">Next Fireship</a> project - <a style = {{fontWeight: "bold"}} href = "https://github.com/fireship-io/next-firebase-course/tree/main" target="_blank">Next Fireship Repository</a></span>
         <div className = "reactPlayer">
