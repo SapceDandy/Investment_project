@@ -16,10 +16,6 @@ a {
   box-sizing: border-box;
   list-style: none;
   scroll-behavior: smooth;
-
-  @media screen and (max-width: 900px){
-    background: red;
-  }
 }
 
 * button {
@@ -29,8 +25,8 @@ a {
 
 .onMobile {
   display: flex;
-  flex-direction: row;
-  column-gap: 2vw;
+  flex-direction: "row";
+  column-gap: "2vw";
 }
 
 /*@media (prefers-color-scheme: dark) {
