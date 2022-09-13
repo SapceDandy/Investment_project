@@ -212,9 +212,7 @@ export default function Home({uploadPosts}) {
       <div className = "centerWelcomePage">
         <h1>Welcome to Devon's Investment App</h1>
         <span>This project was inspired by the <a style = {{fontWeight: "bold"}} href = "https://next.fireship.io/" target="_blank">Next Fireship</a> project - <a style = {{fontWeight: "bold"}} href = "https://github.com/fireship-io/next-firebase-course/tree/main" target="_blank">Next Fireship Repository</a></span>
-        <div className = "reactPlayer">
-          <ReactPlayer controls url = "https://youtu.be/qm_KN-k7CWs" />
-        </div>
+        <ReactPlayer controls url = "https://youtu.be/qm_KN-k7CWs" />
         <Feed posts = {posts} />
         {(!loading) && (!feedBottom) && (posts?.length !== 0) && (posts.length % numOfPosts === 0) && (<button className = "generalButton" onClick = {getPosts}>More</button>)}
         {(feedBottom) && (posts?.length !== 0) && (posts.length % numOfPosts !== 0) && (<span>You have reached the end!</span>)}
