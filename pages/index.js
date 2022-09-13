@@ -1,5 +1,5 @@
 import Feed from "../components/Feed";
-import ReactPlayer from "react-player/youtube";
+import ReactPlayer from 'react-player/youtube';
 import Loader from "../components/Loader";
 import algoliasearch from 'algoliasearch/lite';
 import { Hit } from "../components/HitFeed"
@@ -7,7 +7,7 @@ import { InstantSearch, SearchBox, Hits } from 'react-instantsearch-hooks-web';
 import { firestore, postToJSON } from '../library/firebase';
 import { UserContext } from "../library/context";
 import { Timestamp, query, where, orderBy, limit, collectionGroup, collection, getDocs, startAfter} from 'firebase/firestore';
-import { useState, useContext } from "react";
+import Reacct, { useState, useContext } from "react";
 
 const numOfPosts = 5;
 const searchClient = algoliasearch('R4M0BO8C58', 'd998a625ec15d24aedf09a67607c1281');
