@@ -1588,3 +1588,11 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
   margin-bottom: 2rem;
 }
 /*END WELCOME PAGE*/
+
+/*REACT PLAYER*/
+.reactPlayer {
+  display: flex;
+  width: 60vw;
+  height: auto;
+}
+/*END REACT PLAYER*/

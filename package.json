@@ -25,6 +25,7 @@
     "react-instantsearch-dom": "^6.31.1",
     "react-instantsearch-hooks-web": "^6.31.1",
     "react-markdown": "^8.0.3",
+    "react-player": "^2.10.1",
     "uniqid": "^5.4.0"
   },
   "devDependencies": {
