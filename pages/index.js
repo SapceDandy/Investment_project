@@ -1,5 +1,5 @@
 import Feed from "../components/Feed";
-import ReactPlayer from "react-player";
+import ReactPlayer from "react-player/youtube";
 import Loader from "../components/Loader";
 import algoliasearch from 'algoliasearch/lite';
 import { Hit } from "../components/HitFeed"
