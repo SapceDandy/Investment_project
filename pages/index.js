@@ -1,4 +1,5 @@
 import Feed from "../components/Feed";
+import ReactPlayer from 'react-player/youtube'
 import Loader from "../components/Loader";
 import algoliasearch from 'algoliasearch/lite';
 import { Hit } from "../components/HitFeed"
@@ -6,7 +7,7 @@ import { InstantSearch, SearchBox, Hits } from 'react-instantsearch-hooks-web';
 import { firestore, postToJSON } from '../library/firebase';
 import { UserContext } from "../library/context";
 import { Timestamp, query, where, orderBy, limit, collectionGroup, collection, getDocs, startAfter} from 'firebase/firestore';
-import Reacct, { useState, useContext } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 
 const numOfPosts = 5;
 const searchClient = algoliasearch('R4M0BO8C58', 'd998a625ec15d24aedf09a67607c1281');
@@ -30,7 +31,14 @@ export default function Home({uploadPosts}) {
   const [loading, setLoading] = useState(false);
   const [feedBottom, setFeedBottom] = useState(false);
   const [currentBtn, setCurrentBtn] = useState("all");
-  const [searching, setSearching] = useState(false)
+  const [searching, setSearching] = useState(false);
+  const [hasWindow, setHasWindow] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setHasWindow(true)
+    }
+  }, [])
 
   async function investor() {
     const ref = collectionGroup(firestore, "posts");
@@ -210,7 +218,10 @@ export default function Home({uploadPosts}) {
     {!user && (
       <div className = "centerWelcomePage">
         <h1>Welcome to Devon's Investment App</h1>
-        <span>This project was inspired by the <a style = {{fontWeight: "bold"}} href = "https://next.fireship.io/" target="_blank">Next Fireship</a> project - <a style = {{fontWeight: "bold"}} href = "https://github.com/fireship-io/next-firebase-course/tree/main" target="_blank">Next Fireship Repository</a></span>
+        <div>This project was inspired by the <a style = {{fontWeight: "bold"}} href = "https://next.fireship.io/" target="_blank">Next Fireship</a> project - <a style = {{fontWeight: "bold"}} href = "https://github.com/fireship-io/next-firebase-course/tree/main" target="_blank">Next Fireship Repository</a></div>
+        {(hasWindow) && (<div className = "reactPlayer">
+          <ReactPlayer controls width = "800px" height = "450px" url = 'https://www.youtube.com/watch?v=qm_KN-k7CWs' />
+        </div>)}
         <Feed posts = {posts} />
         {(!loading) && (!feedBottom) && (posts?.length !== 0) && (posts.length % numOfPosts === 0) && (<button className = "generalButton" onClick = {getPosts}>More</button>)}
         {(feedBottom) && (posts?.length !== 0) && (posts.length % numOfPosts !== 0) && (<span>You have reached the end!</span>)}

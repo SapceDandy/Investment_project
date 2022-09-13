@@ -16,13 +16,19 @@
     "module": "esnext",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "moduleResolution": "node"
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "components/Navbar.js", "library/hooks.js", "library/firebase.js", "pages/index.js", "pages/_app.js"  ],
+    "**/*.tsx",
+    "components/Navbar.js",
+    "library/hooks.js",
+    "library/firebase.js",
+    "pages/index.js",
+    "pages/_app.js"
+  ],
   "exclude": [
     "node_modules"
   ]
